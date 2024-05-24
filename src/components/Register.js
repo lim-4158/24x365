@@ -9,10 +9,11 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:8000/api/register/', { username, password });
+      const response = await axios.post('http://localhost:8000/api/register/', { username, password });
       setMessage('Registration successful');
     } catch (error) {
-      setMessage('Registration failed');
+      console.error('Registration error:', error);
+      setMessage('Registration failed: ' + (error.response?.data?.error || 'Unknown error'));
     }
   };
 
@@ -25,12 +26,14 @@ const Register = () => {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           placeholder="Username"
+          required
         />
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
+          required
         />
         <button type="submit">Register</button>
       </form>
