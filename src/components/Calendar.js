@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import BackButton from './BackButton';
+import './Calendar.css'; // Import CSS file for styling
 
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -48,6 +50,7 @@ const Calendar = () => {
 
   return (
     <div className="calendar">
+      <BackButton />  
       <div className="header">
         <button onClick={prevMonth}>Prev</button>
         <h2>{currentDate.toLocaleString('default', { month: 'long', year: 'numeric' })}</h2>
@@ -56,13 +59,13 @@ const Calendar = () => {
       <table className="calendar-table">
         <thead>
           <tr>
-            <th>Sun</th>
-            <th>Mon</th>
-            <th>Tue</th>
-            <th>Wed</th>
-            <th>Thu</th>
-            <th>Fri</th>
-            <th>Sat</th>
+            <th className="header-cell">Sun</th>
+            <th className="header-cell">Mon</th>
+            <th className="header-cell">Tue</th>
+            <th className="header-cell">Wed</th>
+            <th className="header-cell">Thu</th>
+            <th className="header-cell">Fri</th>
+            <th className="header-cell">Sat</th>
           </tr>
         </thead>
         <tbody>
