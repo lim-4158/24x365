@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import BackButton from './BackButton';
-import './Calendar.css'; // Import CSS file for styling
 
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
