@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'myapp',
     'rest_framework.authtoken',
-    'corsheaders'
+    'corsheaders',
+    'chatbot',
 ]
 
 MIDDLEWARE = [
