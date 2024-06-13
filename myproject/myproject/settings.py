@@ -99,10 +99,20 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'djongo',
+        'NAME': '24x365',
+        'ENFORCE_SCHEMA': False,
+        'CLIENT': {
+            'host': 'localhost',
+            'port': 27017,
+            'username': 'admin',
+            'password': 'test1234',
+            'authSource': '24x365',
+            'authMechanism': 'SCRAM-SHA-256',
+        },
     }
 }
+
 
 
 # Password validation
