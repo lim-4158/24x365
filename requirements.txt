@@ -2,5 +2,5 @@ python-decouple
 Django==5.0.6
 djangorestframework
 django-cors-headers
-
+openai
 
