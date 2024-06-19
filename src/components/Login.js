@@ -29,6 +29,10 @@ const Login = () => {
     navigate('/chatbot');
   };
 
+  const redirectToAddEvent = () => {
+    navigate('/addevent');
+  };
+
   return (
     <div>
       <h2>Login</h2>
@@ -52,6 +56,7 @@ const Login = () => {
         <div>
           <button onClick={redirectToCalendar}>Go to Calendar</button>
           <button onClick={redirectToChatbot}>Go to Chatbot</button>
+          <button onClick={redirectToAddEvent}>Go to Add Event</button>
         </div>
       )}
     </div>
