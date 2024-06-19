@@ -20,3 +20,11 @@ node_modules/
 # ignore db files
 *.sqlite3
 
+
+# ignore db files
+*.sqlite3
+
+
+credentials.json
+token.json
+*.sqlite3
