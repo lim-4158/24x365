@@ -3,4 +3,6 @@ Django==5.0.6
 djangorestframework
 django-cors-headers
 openai
-
+python-dotenv
+google-api-python-client
+google-auth-oauthlib
