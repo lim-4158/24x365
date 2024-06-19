@@ -4,6 +4,7 @@ __pycache__/
 
 # Ignore environment files
 *.env
+.venv
 
 # Ignore node_modules directory
 node_modules/
@@ -15,6 +16,14 @@ node_modules/
 *.o
 *.out
 *.class
+
+# ignore db files
+*.sqlite3
+
+
+# ignore db files
+*.sqlite3
+
 
 credentials.json
 token.json

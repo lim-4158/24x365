@@ -6,6 +6,9 @@ import Welcome from './components/Welcome';
 import Calendar from './components/Calendar';
 import Chatbot from './components/Chatbot';
 import AddEvent from './components/AddEvent';
+import Calendar from './components/Calendar'; // Corrected import statement
+import ChatComponent from './components/ChatComponent';
+
 
 function App() {
   return (
@@ -16,6 +19,7 @@ function App() {
           <Route path="/calendar" element={<Calendar />} /> 
           <Route path="/chatbot" element={<Chatbot />} /> 
           <Route path="/addevent" element={<AddEvent />} /> 
+          <Route path="/chatbot" element={<ChatComponent />} /> 
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Routes>

@@ -55,7 +55,8 @@ INSTALLED_APPS = [
     'login',
     'googlecalendar',
     'rest_framework.authtoken',
-    'corsheaders'
+    'corsheaders',
+    'chatbot',
 ]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'

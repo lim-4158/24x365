@@ -1,0 +1,63 @@
+<!-- chatbot/templates/chatbot/chat.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with ChatGPT</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .chat-box {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .messages {
+            height: 300px;
+            overflow-y: scroll;
+            margin-bottom: 20px;
+        }
+        .messages div {
+            margin-bottom: 10px;
+        }
+        .user-message {
+            text-align: right;
+            color: blue;
+        }
+        .bot-message {
+            text-align: left;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-box">
+        <div class="messages" id="messages"></div>
+        <input type="text" id="message-input" placeholder="Type your message here..." style="width: 80%;">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        function sendMessage() {
+            var message = $('#message-input').val();
+            if (message.trim() === '') return;
+            
+            $('#messages').append('<div class="user-message">' + message + '</div>');
+            $('#message-input').val('');
+
+            $.get('/chatbot/get_response/', {message: message}, function(data) {
+                $('#messages').append('<div class="bot-message">' + data.message + '</div>');
+                $('#messages').scrollTop($('#messages')[0].scrollHeight);
+            });
+        }
+    </script>
+</body>
+</html>
