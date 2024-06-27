@@ -7,5 +7,6 @@ urlpatterns = [
     path('googlecalendar/', include('googlecalendar.urls')),
     path('', include('googlecalendar.urls')),
     path('api/', include('login.urls')),
+    # path('api/', include('myapp.urls')),
     path('chat/', include('chatbot.urls')),
 ]

@@ -4,6 +4,7 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Welcome from './components/Welcome';
 import AddEvent from './components/AddEvent';
+
 import ChatComponent from './components/ChatComponent';
 import ConnectGoogleCalendar from './components/ConnectGoogleCalendar';
 import UserCalendar from './components/UserCalendar';
