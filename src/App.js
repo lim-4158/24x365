@@ -4,9 +4,9 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Welcome from './components/Welcome';
 import Calendar from './components/Calendar';
-import Chatbot from './components/Chatbot';
+import Chatbot from './components/ChatComponent';
 import AddEvent from './components/AddEvent';
-import Calendar from './components/Calendar'; // Corrected import statement
+// import Calendar from './components/Calendar'; // Corrected import statement
 import ChatComponent from './components/ChatComponent';
 
 

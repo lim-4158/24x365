@@ -6,6 +6,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('googlecalendar/', include('googlecalendar.urls')),
     path('', include('googlecalendar.urls')),
-    path('api/', include('myapp.urls')),
+    # path('api/', include('myapp.urls')),
     path('chat/', include('chatbot.urls')),
 ]
