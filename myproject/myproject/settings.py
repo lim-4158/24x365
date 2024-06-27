@@ -72,7 +72,24 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware'
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',  # Your React app's URL
+]
+
+# Allow specific headers
+CORS_ALLOW_HEADERS = [
+    'content-type',
+    'authorization',
+    'x-csrftoken',
+]
+
+# Expose specific headers
+CORS_EXPOSE_HEADERS = [
+    'content-type',
+    'authorization',
+]
 
 ROOT_URLCONF = 'myproject.urls'
 

@@ -9,6 +9,8 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import Flow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from django.views.decorators.http import require_GET
+
 
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
 REDIRECT_URI = "http://localhost:8000/googlecalendar/oauth2callback"
@@ -33,7 +35,8 @@ def google_calendar_events(request):
             flow.redirect_uri = REDIRECT_URI
             authorization_url, state = flow.authorization_url(
                 access_type='offline',
-                include_granted_scopes='true'
+                include_granted_scopes='true',
+                prompt='consent'  # Force re-consent to get a refresh token
             )
             request.session['state'] = state
             print(f"State set in session: {state}")  # Debugging line
@@ -54,10 +57,15 @@ def google_calendar_events(request):
             for event in events
         ]
 
-        return JsonResponse(events_list, safe=False)
+        # Store events in session or any other storage to be accessed by the React app
+        request.session['events'] = events_list
+
+        # Redirect to React app route for displaying events
+        return HttpResponseRedirect('http://localhost:3000/usercalendar')  # Adjust URL to your React app
 
     except HttpError as error:
         return JsonResponse({"error": str(error)}, status=500)
+
 
 @csrf_exempt
 def create_event(request):
@@ -129,3 +137,43 @@ def force_reauthentication(request):
     if os.path.exists(TOKEN_PATH):
         os.remove(TOKEN_PATH)
     return redirect('google-calendar-events')
+
+@require_GET
+def get_user_calendar_id(request):
+    try:
+        # Load credentials from token.json
+        if os.path.exists(TOKEN_PATH):
+            creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
+        else:
+            return JsonResponse({"error": "No valid credentials found."}, status=401)
+
+        # Build the Google Calendar service
+        service = build("calendar", "v3", credentials=creds)
+
+        # Fetch the list of calendars
+        calendar_list = service.calendarList().list().execute()
+
+        # Get the primary calendar ID
+        primary_calendar_id = None
+        for calendar_entry in calendar_list.get('items', []):
+            if calendar_entry.get('primary'):
+                primary_calendar_id = calendar_entry.get('id')
+                break
+
+        if not primary_calendar_id:
+            return JsonResponse({"error": "No primary calendar found."}, status=404)
+
+        return JsonResponse({"calendar_id": primary_calendar_id})
+
+    except HttpError as error:
+        return JsonResponse({"error": str(error)}, status=500)
+    
+def check_google_auth(request):
+    if os.path.exists(TOKEN_PATH):
+        creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
+        if creds and creds.valid:
+            return JsonResponse({"authenticated": True})
+        else:
+            return JsonResponse({"authenticated": False})
+    else:
+        return JsonResponse({"authenticated": False})
