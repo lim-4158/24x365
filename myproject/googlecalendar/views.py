@@ -36,6 +36,7 @@ def google_calendar_events(request):
                 include_granted_scopes='true'
             )
             request.session['state'] = state
+            print(f"State set in session: {state}")  # Debugging line
             return HttpResponseRedirect(authorization_url)
 
     try:
@@ -101,12 +102,19 @@ def create_event(request):
     return JsonResponse({"error": "Invalid request method"}, status=400)
 
 def oauth2callback(request):
-    state = request.session['state']
+    state = request.session.get('state')
+    if not state:
+        return JsonResponse({"error": "State parameter missing in session. Reauthenticate required."}, status=400)
+
+    print(f"State retrieved from session: {state}")  # Debugging line
+
     flow = Flow.from_client_secrets_file(
         CREDS_PATH, SCOPES, state=state)
     flow.redirect_uri = REDIRECT_URI
 
     authorization_response = request.build_absolute_uri()
+    print(f"Authorization response: {authorization_response}")  # Debugging line
+
     try:
         flow.fetch_token(authorization_response=authorization_response)
         creds = flow.credentials
