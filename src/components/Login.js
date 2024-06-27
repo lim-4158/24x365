@@ -21,10 +21,6 @@ const Login = () => {
     }
   };
 
-  const redirectToCalendar = () => {
-    navigate('/calendar');
-  };
-
   const redirectToChatbot = () => {
     navigate('/chatbot');
   };
@@ -32,6 +28,14 @@ const Login = () => {
   const redirectToAddEvent = () => {
     navigate('/addevent');
   };
+
+  const redirectToGoogleCalendar = () => {
+    navigate('/connectgooglecalendar')
+  }
+
+  const redirectToUserCalendar = () => {
+    navigate('/usercalendar')
+  }
 
   return (
     <div>
@@ -54,9 +58,9 @@ const Login = () => {
       {message && <p>{message}</p>}
       {isLoggedIn && (
         <div>
-          <button onClick={redirectToCalendar}>Go to Calendar</button>
           <button onClick={redirectToChatbot}>Go to Chatbot</button>
           <button onClick={redirectToAddEvent}>Go to Add Event</button>
+          <button onClick={redirectToGoogleCalendar}>Go to Google Calendar</button>
         </div>
       )}
     </div>
