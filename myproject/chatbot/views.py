@@ -7,79 +7,109 @@ from .serializers import ChatResponseSerializer
 import openai
 import os
 from datetime import datetime
+import json
+from googlecalendar.views import create_google_calendar_event  # Import the function
+from zoneinfo import ZoneInfo
 
 # Set your OpenAI API key here
 openai.api_key = os.getenv('OPEN_AI_KEY')
 
-# You are a part of a larger operation to help with time management to help user add events to their google calendar. Your task is to understand and extract information from the user. 
-# You need to get information on the type of event and also the time of event. output in the following format "type: xxx, time: xxx". 
-# The type of event is either ADD or DELETE. It means adding or deleting events. 
-# Always ask for user confirmation after you retrieved the data. 
-# When you are unsure of what the user wants, for example when the user say next wednesday but it could be ambiguous, clarify with the user.
-
-def test_func(word):
-    print(word)
-    return
+SGT = ZoneInfo("Asia/Singapore")  
 
 @api_view(['POST'])
 def get_response(request):
-
-    # user_input = request.GET.get('message')
-    
     conversation = request.data.get('messages', [])
 
     timenow = datetime.now()
     daynow = datetime.now().strftime("%A")
 
-
-    formatted_messages = [{"role": "system", "content": f"""The time now is {timenow} and it is {daynow}.You are a part of a larger operation to help with time management to help user add events to their google calendar. Your task is to understand and extract information from the user. 
-        You need to get information on the type of event and also the time of event. output in the following format 'type: xxx, time: xxx'. 
+    system_message = f"""The time now is {timenow} and it is {daynow}. You are a part of a larger operation to help with time management to help users add events to their Google Calendar. Your task is to understand and extract information from the user. 
+        You need to get information on the type of event and also the time of event. 
         The type of event is either ADD or DELETE. It means adding or deleting events. 
-        When I tell you that i got something going on without mentioning deletion, it would mean to add event. the default would be to add. 
+        When I tell you that I got something going on without mentioning deletion, it would mean to add event. The default would be to add. 
         Always ask for user confirmation after you retrieved the data. 
-        When you are unsure of what the user wants, for example when the user say next wednesday but it could be ambiguous, clarify with the user. 
-        Once clarified, produce a json file with 3 fields, summary, start date and time, end date and time.
-    """}]
+        When you are unsure of what the user wants, for example when the user says next Wednesday but it could be ambiguous, clarify with the user. 
+        Once clarified, call the create_event function with the necessary information.
+    """
 
-    function_schema = {
-        "type": "object",
-        "properties": {
-            "word": {
-                "type": "string",
-                "description": "A word to print"
-            }
-        },
-        "required": ["word"]
-    }
-
-    formatted_messages = [
-        {"role": "system", "content": "This is to test function calling"},
-        {"role": "user", "content": "testing"}
-    ]
+    formatted_messages = [{"role": "system", "content": system_message}]
     
     for msg in conversation:
         role = "user" if msg['type'] == 'user' else "assistant"
-        formatted_messages.append({"role": role, "content": msg['text']})
+        content = msg['text']
+        if isinstance(content, (dict, list)):
+            content = json.dumps(content)
+        formatted_messages.append({"role": role, "content": content})
 
-    response = openai.chat.completions.create(
-        model="gpt-3.5-turbo", #gpt-4o #0125
-        messages=formatted_messages,
-        max_tokens=150, 
-        tools = [
-            {
-                "type":"function",
-                "function": {
-                    "name":"test_func", 
-                    "description":"testing function", #trigger when add event is needed
-                    "parameters": function_schema
-                }
+    create_event_schema = {
+        "type": "object",
+        "properties": {
+            "summary": {
+                "type": "string",
+                "description": "A brief description of the event"
+            },
+            "start": {
+                "type": "string",
+                "description": "Start date and time of the event in ISO 8601 format"
+            },
+            "end": {
+                "type": "string",
+                "description": "End date and time of the event in ISO 8601 format"
             }
-        ]
-    )
+        },
+        "required": ["summary", "start", "end"]
+    }
 
-    answer = response.choices[0].message.content
-    # print(answer)
-    serializer = ChatResponseSerializer(data={'message': answer})
-    if serializer.is_valid():
-        return Response(serializer.data)
-    return Response(serializer.errors)
+    try:
+        response = openai.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=formatted_messages,
+            max_tokens=150, 
+            tools=[
+                {
+                    "type": "function",
+                    "function": {
+                        "name": "create_event", 
+                        "description": "Create a new event in the user's Google Calendar",
+                        "parameters": create_event_schema
+                    }
+                }
+            ]
+        )
+
+        assistant_message = response.choices[0].message
+
+        if assistant_message.tool_calls:
+            for tool_call in assistant_message.tool_calls:
+                if tool_call.function.name == "create_event":
+                    function_args = json.loads(tool_call.function.arguments)
+
+                    start_time = datetime.fromisoformat(function_args['start']).replace(tzinfo=SGT)
+                    end_time = datetime.fromisoformat(function_args['end']).replace(tzinfo=SGT)
+                
+                    result = create_google_calendar_event(
+                        function_args['summary'],
+                        start_time.isoformat(),
+                        end_time.isoformat()
+                    )
+                    formatted_messages.append({"role": "function", "name": "create_event", "content": json.dumps(result)})
+                    
+                    # Get a follow-up response from the model
+                    follow_up_response = openai.chat.completions.create(
+                        model="gpt-3.5-turbo",
+                        messages=formatted_messages,
+                        max_tokens=150
+                    )
+                    answer = follow_up_response.choices[0].message.content
+        else:
+            answer = assistant_message.content
+
+        serializer = ChatResponseSerializer(data={'message': answer})
+        if serializer.is_valid():
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+
+    except openai.BadRequestError as e:
+        return Response({"error": str(e)}, status=400)
+    except Exception as e:
+        return Response({"error": "An unexpected error occurred"}, status=500)

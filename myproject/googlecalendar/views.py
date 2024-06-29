@@ -44,7 +44,7 @@ def google_calendar_events(request):
 
     try:
         service = build("calendar", "v3", credentials=creds)
-        now = datetime.datetime.utcnow().isoformat() + "Z"
+        now = datetime.datetime.now(datetime.sgt).isoformat() + "Z"
         events_result = service.events().list(
             calendarId='primary', timeMin=now,
             maxResults=10, singleEvents=True,
@@ -67,46 +67,88 @@ def google_calendar_events(request):
         return JsonResponse({"error": str(error)}, status=500)
 
 
+# @csrf_exempt
+# def create_event(request):
+#     if request.method == "POST":
+#         creds = None
+
+#         if os.path.exists(TOKEN_PATH):
+#             creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
+
+#         if not creds or not creds.valid:
+#             return JsonResponse({"error": "Credentials are not valid or expired."}, status=401)
+
+#         try:
+#             service = build("calendar", "v3", credentials=creds)
+#             data = json.loads(request.body)
+
+#             # Print event data for debugging
+#             print("Event Data:", json.dumps(data, indent=2))
+
+#             event = {
+#                 'summary': data['summary'],
+#                 'start': {
+#                     'dateTime': data['start'],
+#                     'timeZone': 'UTC',
+#                 },
+#                 'end': {
+#                     'dateTime': data['end'],
+#                     'timeZone': 'UTC',
+#                 },
+#             }
+
+#             # Print the formatted event object
+#             print("Formatted Event:", json.dumps(event, indent=2))
+
+#             event = service.events().insert(calendarId='primary', body=event).execute()
+#             return JsonResponse({"message": "Event created successfully", "event": event})
+
+#         except HttpError as error:
+#             print(f"HttpError: {error}")
+#             return JsonResponse({"error": str(error)}, status=500)
+
+#     return JsonResponse({"error": "Invalid request method"}, status=400)
+
+def create_google_calendar_event(summary, start, end):
+    creds = None
+
+    print("sheesh")
+    if os.path.exists(TOKEN_PATH):
+        creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
+
+    if not creds or not creds.valid:
+        return {"error": "Credentials are not valid or expired."}
+
+    try:
+        service = build("calendar", "v3", credentials=creds)
+
+        event = {
+            'summary': summary,
+            'start': {
+                'dateTime': start,
+                'timeZone': 'UTC',
+            },
+            'end': {
+                'dateTime': end,
+                'timeZone': 'UTC',
+            },
+        }
+
+        event = service.events().insert(calendarId='primary', body=event).execute()
+        return {"message": "Event created successfully", "event": event}
+
+    except HttpError as error:
+        return {"error": str(error)}
+
 @csrf_exempt
 def create_event(request):
     if request.method == "POST":
-        creds = None
-
-        if os.path.exists(TOKEN_PATH):
-            creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
-
-        if not creds or not creds.valid:
-            return JsonResponse({"error": "Credentials are not valid or expired."}, status=401)
-
-        try:
-            service = build("calendar", "v3", credentials=creds)
-            data = json.loads(request.body)
-
-            # Print event data for debugging
-            print("Event Data:", json.dumps(data, indent=2))
-
-            event = {
-                'summary': data['summary'],
-                'start': {
-                    'dateTime': data['start'],
-                    'timeZone': 'UTC',
-                },
-                'end': {
-                    'dateTime': data['end'],
-                    'timeZone': 'UTC',
-                },
-            }
-
-            # Print the formatted event object
-            print("Formatted Event:", json.dumps(event, indent=2))
-
-            event = service.events().insert(calendarId='primary', body=event).execute()
-            return JsonResponse({"message": "Event created successfully", "event": event})
-
-        except HttpError as error:
-            print(f"HttpError: {error}")
-            return JsonResponse({"error": str(error)}, status=500)
-
+        data = json.loads(request.body)
+        result = create_google_calendar_event(data['summary'], data['start'], data['end'])
+        print(data['start'])
+        if 'error' in result:
+            return JsonResponse(result, status=500)
+        return JsonResponse(result)
     return JsonResponse({"error": "Invalid request method"}, status=400)
 
 def oauth2callback(request):

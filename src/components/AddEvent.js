@@ -2,9 +2,19 @@
 import React, { useState } from "react";
 
 const AddEvent = () => {
-  const [summary, setSummary] = useState("");
-  const [start, setStart] = useState("");
-  const [end, setEnd] = useState("");
+  // Set default date to today
+  const today = new Date();
+  const defaultStart = new Date(today.setHours(21, 0, 0, 0)); // 9:00 PM
+  const defaultEnd = new Date(today.setHours(22, 0, 0, 0)); // 10:00 PM
+
+  // Format date for datetime-local input
+  const formatDateTimeLocal = (date) => {
+    return date.toISOString().slice(0, 16);
+  };
+
+  const [summary, setSummary] = useState("badminton");
+  const [start, setStart] = useState(formatDateTimeLocal(defaultStart));
+  const [end, setEnd] = useState(formatDateTimeLocal(defaultEnd));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,7 +26,8 @@ const AddEvent = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:8000/calendar/events/create/", {
+      alert(JSON.stringify(event))
+      const response = await fetch("http://localhost:8000/googlecalendar/calendar/createevents", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
