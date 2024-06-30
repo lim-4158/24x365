@@ -61,6 +61,7 @@
 
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './ChatComponent.css';
 
@@ -92,6 +93,8 @@ const ChatComponent = () => {
         }
     };
 
+    const navigate = useNavigate();
+
     return (
         <div className="chat-container">
             <div className="chat-box">
@@ -113,6 +116,9 @@ const ChatComponent = () => {
                     />
                     <button onClick={sendMessage} className="send-button">Send</button>
                 </div>
+                <button onClick={() => navigate('/usercalendar')} className="welcome-button register">
+                    Go to Calendar
+                </button>
             </div>
         </div>
     );
