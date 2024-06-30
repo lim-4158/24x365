@@ -76,7 +76,7 @@ MIDDLEWARE = [
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
-    'https://two4x365-1.onrender.com',  # Your React app's URL
+    'http://localhost:3000',  # Your React app's URL
     "https://two4x365-1.onrender.com",
 ]
 
