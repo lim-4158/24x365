@@ -15,7 +15,7 @@
 //         setInput('');
 
 //         try {
-//             const response = await axios.get('http://127.0.0.1:8000/chat/get_response/', {
+//             const response = await axios.get('https://two4x365.onrender.com/chat/get_response/', {
 //                 params: { message: input }
 //             });
 //             const botMessage = { type: 'bot', text: response.data.message };
@@ -76,7 +76,7 @@ const ChatComponent = () => {
         setInput('');
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/chat/get_response/', {
+            const response = await axios.post('https://two4x365.onrender.com/chat/get_response/', {
                 messages: newMessages
             });
             const botMessage = { type: 'bot', text: response.data.message };
