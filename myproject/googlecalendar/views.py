@@ -11,14 +11,18 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from django.views.decorators.http import require_GET
 
-
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
 REDIRECT_URI = "https://two4x365.onrender.com/googlecalendar/oauth2callback"
-CREDS_PATH = os.path.join(os.path.dirname(__file__), "credentials.json")
 TOKEN_PATH = os.path.join(os.path.dirname(__file__), "token.json")
 
 # Set the environment variable to allow HTTP connections
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+
+def get_google_credentials():
+    credentials_json = os.getenv('GOOGLE_CREDENTIALS')
+    if not credentials_json:
+        raise ValueError("GOOGLE_CREDENTIALS environment variable is not set")
+    return json.loads(credentials_json)
 
 def google_calendar_events(request):
     creds = None
@@ -31,7 +35,8 @@ def google_calendar_events(request):
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = Flow.from_client_secrets_file(CREDS_PATH, SCOPES)
+            creds_info = get_google_credentials()
+            flow = Flow.from_client_config(creds_info, SCOPES)
             flow.redirect_uri = REDIRECT_URI
             authorization_url, state = flow.authorization_url(
                 access_type='offline',
@@ -65,49 +70,6 @@ def google_calendar_events(request):
 
     except HttpError as error:
         return JsonResponse({"error": str(error)}, status=500)
-
-
-# @csrf_exempt
-# def create_event(request):
-#     if request.method == "POST":
-#         creds = None
-
-#         if os.path.exists(TOKEN_PATH):
-#             creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
-
-#         if not creds or not creds.valid:
-#             return JsonResponse({"error": "Credentials are not valid or expired."}, status=401)
-
-#         try:
-#             service = build("calendar", "v3", credentials=creds)
-#             data = json.loads(request.body)
-
-#             # Print event data for debugging
-#             print("Event Data:", json.dumps(data, indent=2))
-
-#             event = {
-#                 'summary': data['summary'],
-#                 'start': {
-#                     'dateTime': data['start'],
-#                     'timeZone': 'UTC',
-#                 },
-#                 'end': {
-#                     'dateTime': data['end'],
-#                     'timeZone': 'UTC',
-#                 },
-#             }
-
-#             # Print the formatted event object
-#             print("Formatted Event:", json.dumps(event, indent=2))
-
-#             event = service.events().insert(calendarId='primary', body=event).execute()
-#             return JsonResponse({"message": "Event created successfully", "event": event})
-
-#         except HttpError as error:
-#             print(f"HttpError: {error}")
-#             return JsonResponse({"error": str(error)}, status=500)
-
-#     return JsonResponse({"error": "Invalid request method"}, status=400)
 
 def create_google_calendar_event(summary, start, end):
     creds = None
@@ -158,8 +120,8 @@ def oauth2callback(request):
 
     print(f"State retrieved from session: {state}")  # Debugging line
 
-    flow = Flow.from_client_secrets_file(
-        CREDS_PATH, SCOPES, state=state)
+    creds_info = get_google_credentials()
+    flow = Flow.from_client_config(creds_info, SCOPES, state=state)
     flow.redirect_uri = REDIRECT_URI
 
     authorization_response = request.build_absolute_uri()
