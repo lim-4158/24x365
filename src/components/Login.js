@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
+import GoogleSignInButton from './GoogleSignInButton';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -24,6 +25,11 @@ const Login = () => {
 
   const redirectTo = (path) => {
     navigate(path);
+  };
+
+  const handleGoogleSignInClick = () => {
+    // Redirect to the Google authentication endpoint
+    window.location.href = 'http://localhost:8000/googlecalendar/events';
   };
 
   return (
@@ -55,9 +61,8 @@ const Login = () => {
         {isLoggedIn && (
           <div className="navigation-buttons">
             <button onClick={() => redirectTo('/chatbot')}>Chatbot</button>
-            <button onClick={() => redirectTo('/addevent')}>Add Event</button>
-            <button onClick={() => redirectTo('/connectgooglecalendar')}>Google Calendar</button>
-            <button onClick={() => redirectTo('/usercalendar')}>User Calendar</button>
+            <button onClick={() => redirectTo('/usercalendar')}>Calendar</button>
+            <GoogleSignInButton onClick={handleGoogleSignInClick} />
           </div>
         )}
       </div>

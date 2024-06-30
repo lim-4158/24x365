@@ -13,7 +13,7 @@ function UserCalendar() {
     setTimezone(userTimezone);
 
     // Fetch the calendar ID from the backend
-    fetch('http://localhost:8000/googlecalendar/calendar/displayevents', {
+    fetch('http://localhost:8000/googlecalendar/display_events', {
       method: 'GET',
       credentials: 'include',
     })

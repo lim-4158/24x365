@@ -44,7 +44,7 @@ def google_calendar_events(request):
 
     try:
         service = build("calendar", "v3", credentials=creds)
-        now = datetime.datetime.now(datetime.sgt).isoformat() + "Z"
+        now = datetime.datetime.now().isoformat() + "Z"
         events_result = service.events().list(
             calendarId='primary', timeMin=now,
             maxResults=10, singleEvents=True,
