@@ -13,7 +13,7 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:8000/api/register/', { username, password });
+      await axios.post('https://two4x365.onrender.com/api/register/', { username, password });
       setMessage('Registration successful');
       setRegistered(true);
     } catch (error) {
