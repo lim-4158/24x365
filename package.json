@@ -44,5 +44,5 @@
     "webpack": "^4.42.0"
   }
   ,
-  "proxy": "https://two4x365-1.onrender.com"
+  "proxy": "https://two4x365.onrender.com"
 }
