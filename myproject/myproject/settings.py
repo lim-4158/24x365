@@ -33,7 +33,7 @@ GOOGLE_CREDENTIALS_PATH = os.getenv('GOOGLE_CREDENTIALS_PATH')
 
 GOOGLE_CLIENT_ID = '932125669114-gmrcq6oi32c0tatus1dectjp4iouaopi.apps.googleusercontent.com'
 GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CREDENTIALS_PATH')
-GOOGLE_REDIRECT_URI = 'http://localhost:8000/googlecalendar/oauth2callback'
+GOOGLE_REDIRECT_URI = 'https://two4x365-1.onrender.com/googlecalendar/oauth2callback'
 GOOGLE_API_SCOPES = ['https://www.googleapis.com/auth/calendar']
 
 

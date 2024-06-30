@@ -29,7 +29,7 @@ const Login = () => {
 
   const handleGoogleSignInClick = () => {
     // Redirect to the Google authentication endpoint
-    window.location.href = 'http://localhost:8000/googlecalendar/events';
+    window.location.href = 'https://two4x365.onrender.com/googlecalendar/events';
   };
 
   return (

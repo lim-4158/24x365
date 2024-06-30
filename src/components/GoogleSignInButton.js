@@ -8,7 +8,7 @@ const GoogleSignInButton = () => {
 
   useEffect(() => {
     // Check if the user is authenticated with Google services
-    fetch('http://localhost:8000/googlecalendar/check_auth', {
+    fetch('https://two4x365.onrender.com/googlecalendar/check_auth', {
       method: 'GET',
       credentials: 'include',
     })
@@ -27,10 +27,10 @@ const GoogleSignInButton = () => {
   const handleConnectClick = () => {
     if (isAuthenticated) {
       // Redirect to the calendar display page
-      window.location.href = 'http://localhost:3000/usercalendar';
+      window.location.href = 'https://two4x365-1.onrender.com/usercalendar';
     } else {
       // Redirect to the Google authentication endpoint
-      window.location.href = 'http://localhost:8000/googlecalendar/events';
+      window.location.href = 'https://two4x365.onrender.com/googlecalendar/events';
     }
   };
 

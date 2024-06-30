@@ -13,7 +13,7 @@ from django.views.decorators.http import require_GET
 
 
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
-REDIRECT_URI = "http://localhost:8000/googlecalendar/oauth2callback"
+REDIRECT_URI = "https://two4x365.onrender.com/googlecalendar/oauth2callback"
 CREDS_PATH = os.path.join(os.path.dirname(__file__), "credentials.json")
 TOKEN_PATH = os.path.join(os.path.dirname(__file__), "token.json")
 
@@ -61,7 +61,7 @@ def google_calendar_events(request):
         request.session['events'] = events_list
 
         # Redirect to React app route for displaying events
-        return HttpResponseRedirect('http://localhost:3000/usercalendar')  # Adjust URL to your React app
+        return HttpResponseRedirect('https://two4x365-1.onrender.com/usercalendar')  # Adjust URL to your React app
 
     except HttpError as error:
         return JsonResponse({"error": str(error)}, status=500)

@@ -27,7 +27,7 @@ const AddEvent = () => {
 
     try {
       alert(JSON.stringify(event))
-      const response = await fetch("http://localhost:8000/googlecalendar/create_events", {
+      const response = await fetch("https://two4x365.onrender.com/googlecalendar/create_events", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
