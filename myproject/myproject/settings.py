@@ -40,7 +40,7 @@ GOOGLE_API_SCOPES = ['https://www.googleapis.com/auth/calendar']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['two4x365.onrender.com']
+ALLOWED_HOSTS = ['two4x365.onrender.com', 'localhost', 'two4x365-1.onrender.com']
 
 
 # Application definition
