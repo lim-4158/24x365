@@ -44,5 +44,5 @@
     "webpack": "^4.42.0"
   }
   ,
-  "proxy": "http://localhost:8000"
+  "proxy": "https://two4x365-1.onrender.com"
 }
