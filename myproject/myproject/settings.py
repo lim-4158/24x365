@@ -77,6 +77,7 @@ CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',  # Your React app's URL
+    "https://two4x365-1.onrender.com",
 ]
 
 # Allow specific headers
