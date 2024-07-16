@@ -181,3 +181,82 @@ def check_google_auth(request):
             return JsonResponse({"authenticated": False})
     else:
         return JsonResponse({"authenticated": False})
+    
+@csrf_exempt
+def delete_google_calendar_event(event_id):
+    creds = None
+    if os.path.exists(TOKEN_PATH):
+        creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
+
+    if not creds or not creds.valid:
+        return {"error": "Credentials are not valid or expired."}
+
+    try:
+        service = build("calendar", "v3", credentials=creds)
+        service.events().delete(calendarId='primary', eventId=event_id).execute()
+        return {"message": "Event deleted successfully"}
+
+    except HttpError as error:
+        return {"error": str(error)}
+    
+@csrf_exempt
+def delete_event(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        event_id = data.get('event_id')
+        if not event_id:
+            return JsonResponse({"error": "event_id is required"}, status=400)
+        result = delete_google_calendar_event(event_id)
+        if 'error' in result:
+            return JsonResponse(result, status=500)
+        return JsonResponse(result)
+    return JsonResponse({"error": "Invalid request method"}, status=400)
+
+
+@csrf_exempt
+def update_google_calendar_event(event_id, summary, start, end):
+    creds = None
+    if os.path.exists(TOKEN_PATH):
+        creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
+
+    if not creds or not creds.valid:
+        return {"error": "Credentials are not valid or expired."}
+
+    try:
+        service = build("calendar", "v3", credentials=creds)
+
+        event = service.events().get(calendarId='primary', eventId=event_id).execute()
+        event['summary'] = summary
+        event['start'] = {
+            'dateTime': start,
+            'timeZone': 'UTC',
+        }
+        event['end'] = {
+            'dateTime': end,
+            'timeZone': 'UTC',
+        }
+
+        updated_event = service.events().update(calendarId='primary', eventId=event['id'], body=event).execute()
+        return {"message": "Event updated successfully", "event": updated_event}
+
+    except HttpError as error:
+        return {"error": str(error)}
+
+@csrf_exempt
+def update_event(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        event_id = data.get('event_id')
+        summary = data.get('summary')
+        start = data.get('start')
+        end = data.get('end')
+        
+        if not event_id or not summary or not start or not end:
+            return JsonResponse({"error": "All fields (event_id, summary, start, end) are required"}, status=400)
+        
+        result = update_google_calendar_event(event_id, summary, start, end)
+        if 'error' in result:
+            return JsonResponse(result, status=500)
+        return JsonResponse(result)
+    return JsonResponse({"error": "Invalid request method"}, status=400)
+
