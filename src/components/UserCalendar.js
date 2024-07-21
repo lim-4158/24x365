@@ -1,4 +1,3 @@
-// src/components/UserCalendar.js
 import React, { useEffect, useState } from 'react';
 
 function UserCalendar() {
@@ -12,8 +11,12 @@ function UserCalendar() {
     const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     setTimezone(userTimezone);
 
+    // Get the backend URL from environment variables
+    const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+    const API_URL = `${BACKEND_URL}googlecalendar/display_events`;
+
     // Fetch the calendar ID from the backend
-    fetch('https://two4x365.onrender.com/googlecalendar/display_events', {
+    fetch(API_URL, {
       method: 'GET',
       credentials: 'include',
     })
