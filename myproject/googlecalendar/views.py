@@ -58,24 +58,6 @@ def google_calendar_events(request):
 
     try:
         service = build("calendar", "v3", credentials=creds)
-
-        # Extract user info and save to the database
-        user_info_service = build('oauth2', 'v2', credentials=creds)
-        user_info = user_info_service.userinfo().get().execute()
-        email = user_info['email']
-        username = user_info.get('name', '')
-
-        print(f"User info: {user_info}")  # Debugging line
-
-        # Check if user exists in the database
-        user, created = User.objects.get_or_create(email=email)
-        if created:
-            user.username = username
-            user.save()
-            print(f"User created: {username} ({email})")
-        else:
-            print(f"User exists: {username} ({email})")
-
         now = datetime.datetime.now().isoformat() + "Z"
         events_result = service.events().list(
             calendarId='primary', timeMin=now,
@@ -93,13 +75,11 @@ def google_calendar_events(request):
         request.session['events'] = events_list
 
         # Redirect to React app route for displaying events
-        return HttpResponseRedirect(f"{FRONTEND_URL}usercalendar")  # Adjust URL to your React app
+        return HttpResponseRedirect(f'{FRONTEND_URL}usercalendar')  # Adjust URL to your React app
 
     except HttpError as error:
         return JsonResponse({"error": str(error)}, status=500)
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")  # Debugging line
-        return JsonResponse({"error": str(e)}, status=500)
+
 
 def create_google_calendar_event(summary, start, end):
     creds = None
