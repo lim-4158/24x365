@@ -11,7 +11,7 @@ from google_auth_oauthlib.flow import Flow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from django.views.decorators.http import require_GET
-from .models import User
+from .models import User, Event
 
 # Load environment variables from .env file
 load_dotenv()
@@ -33,12 +33,18 @@ def get_google_credentials():
         raise ValueError("GOOGLE_CREDENTIALS environment variable is not set")
     return json.loads(credentials_json)
 
+def list_events(request):
+    try:
+        events = Event.objects.all().values('start', 'summary')
+        events_list = list(events)
+        return JsonResponse({"events": events_list})
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+
 def google_calendar_events(request):
     creds = None
-
     if os.path.exists(TOKEN_PATH):
         creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
-        print("Loaded credentials from token.json")
 
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
@@ -50,10 +56,9 @@ def google_calendar_events(request):
             authorization_url, state = flow.authorization_url(
                 access_type='offline',
                 include_granted_scopes='true',
-                prompt='consent'  # Force re-consent to get a refresh token
+                prompt='consent'
             )
             request.session['state'] = state
-            print(f"State set in session: {state}")  # Debugging line
             return HttpResponseRedirect(authorization_url)
 
     try:
@@ -66,20 +71,19 @@ def google_calendar_events(request):
         ).execute()
         events = events_result.get('items', [])
 
-        events_list = [
-            {"start": event["start"].get("dateTime", event["start"].get("date")), "summary": event["summary"]}
-            for event in events
-        ]
+        # Clear existing events before updating
+        Event.objects.all().delete()
 
-        # Store events in session or any other storage to be accessed by the React app
-        request.session['events'] = events_list
+        for event in events:
+            Event.objects.create(
+                summary=event.get('summary', 'No summary'),
+                start=event['start'].get('dateTime', event['start'].get('date'))
+            )
 
-        # Redirect to React app route for displaying events
-        return HttpResponseRedirect(f'{FRONTEND_URL}usercalendar')  # Adjust URL to your React app
+        return HttpResponseRedirect(f'{FRONTEND_URL}usercalendar')
 
     except HttpError as error:
         return JsonResponse({"error": str(error)}, status=500)
-
 
 def create_google_calendar_event(summary, start, end):
     creds = None

@@ -65,6 +65,7 @@ const Login = () => {
           <div className="navigation-buttons">
             <button onClick={() => redirectTo('/chatbot')}>Chatbot</button>
             <button onClick={() => redirectTo('/usercalendar')}>Calendar</button>
+            <button onClick={() => redirectTo('/eventchecklist')}>Event Checklist</button>
             <GoogleSignInButton onClick={handleGoogleSignInClick} />
           </div>
         )}

@@ -6,6 +6,7 @@ import Welcome from './components/Welcome';
 import ChatComponent from './components/ChatComponent';
 import ConnectGoogleCalendar from './components/ConnectGoogleCalendar';
 import UserCalendar from './components/UserCalendar';
+import EventChecklist from './components/EventChecklist';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/connectgooglecalendar" element={<ConnectGoogleCalendar />} />
           <Route path="/usercalendar" element={<UserCalendar />} />
+          <Route path="/eventchecklist" element={<EventChecklist />} />
         </Routes>
       </div>
     </Router>
