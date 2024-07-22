@@ -11,10 +11,13 @@ const Login = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const GOOGLE_AUTH_URL = `${BACKEND_URL}googlecalendar/events`;
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('https://two4x365.onrender.com/api/login/', { username, password });
+      const response = await axios.post(`${BACKEND_URL}api/login/`, { username, password });
       localStorage.setItem('token', response.data.token);
       setMessage('Login successful');
       setIsLoggedIn(true);
@@ -29,7 +32,7 @@ const Login = () => {
 
   const handleGoogleSignInClick = () => {
     // Redirect to the Google authentication endpoint
-    window.location.href = 'https://two4x365.onrender.com/googlecalendar/events';
+    window.location.href = GOOGLE_AUTH_URL;
   };
 
   return (

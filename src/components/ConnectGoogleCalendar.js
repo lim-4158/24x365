@@ -5,9 +5,13 @@ function ConnectGoogleCalendar() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  // Environment variables from .env file
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const FRONTEND_URL = process.env.REACT_APP_FROTNEND_URL;
+
   useEffect(() => {
     // Check if the user is authenticated with Google services
-    fetch('https://two4x365.onrender.com/googlecalendar/check_auth', {
+    fetch(`${BACKEND_URL}googlecalendar/check_auth`, {
       method: 'GET',
       credentials: 'include',
     })
@@ -21,15 +25,15 @@ function ConnectGoogleCalendar() {
         setError('Error checking Google authentication');
         setLoading(false);
       });
-  }, []);
+  }, [BACKEND_URL]);
 
   const handleConnectClick = () => {
     if (isAuthenticated) {
       // Redirect to the calendar display page
-      window.location.href = 'https://two4x365-1.onrender.com/usercalendar';
+      window.location.href = `${FRONTEND_URL}usercalendar`;
     } else {
       // Redirect to the Google authentication endpoint
-      window.location.href = 'https://two4x365.onrender.com/googlecalendar/events';
+      window.location.href = `${BACKEND_URL}googlecalendar/events`;
     }
   };
 

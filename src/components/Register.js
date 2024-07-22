@@ -10,10 +10,13 @@ const Register = () => {
   const [registered, setRegistered] = useState(false);
   const navigate = useNavigate();
 
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const REGISTER_URL = `${BACKEND_URL}api/register/`;
+
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('https://two4x365.onrender.com/api/register/', { username, password });
+      await axios.post(REGISTER_URL, { username, password });
       setMessage('Registration successful');
       setRegistered(true);
     } catch (error) {
