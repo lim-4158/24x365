@@ -162,25 +162,7 @@ def oauth2callback(request):
         creds = flow.credentials
         with open(TOKEN_PATH, 'w') as token:
             token.write(creds.to_json())
-
-        # Extract user info and save to the database
-        user_info_service = build('oauth2', 'v2', credentials=creds)
-        user_info = user_info_service.userinfo().get().execute()
-        email = user_info['email']
-        username = user_info.get('name', '')
-
-        print(f"User info: {user_info}")  # Debugging line
-
-        # Check if user exists in the database
-        user, created = User.objects.get_or_create(email=email)
-        if created:
-            user.username = username
-            user.save()
-            print(f"User created: {username} ({email})")
-        else:
-            print(f"User exists: {username} ({email})")
-
-        return redirect('google_calendar_events')
+        return redirect('google-calendar-events')
     except Exception as e:
         print(f"An error occurred: {e}")
         return JsonResponse({"error": str(e)}, status=500)
