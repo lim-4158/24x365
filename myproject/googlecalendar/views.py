@@ -11,6 +11,7 @@ from google_auth_oauthlib.flow import Flow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_POST
 from .models import User, Event
 
 # Load environment variables from .env file
@@ -33,13 +34,60 @@ def get_google_credentials():
         raise ValueError("GOOGLE_CREDENTIALS environment variable is not set")
     return json.loads(credentials_json)
 
-def list_events(request):
+def update_calendar_events():
+    creds = None
+    if os.path.exists(TOKEN_PATH):
+        creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
+
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            creds_info = get_google_credentials()
+            flow = Flow.from_client_config(creds_info, SCOPES)
+            flow.redirect_uri = REDIRECT_URI
+            authorization_url, state = flow.authorization_url(
+                access_type='offline',
+                include_granted_scopes='true',
+                prompt='consent'
+            )
+            return {'redirect': authorization_url, 'state': state}
+
     try:
-        events = Event.objects.all().values('start', 'summary')
-        events_list = list(events)
-        return JsonResponse({"events": events_list})
-    except Exception as e:
-        return JsonResponse({"error": str(e)}, status=500)
+        service = build("calendar", "v3", credentials=creds)
+        now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
+        events_result = service.events().list(
+            calendarId='primary', timeMin=now,
+            maxResults=10, singleEvents=True,
+            orderBy='startTime'
+        ).execute()
+        events = events_result.get('items', [])
+
+        # Clear existing events before updating
+        Event.objects.all().delete()
+
+        # Save new events to the database
+        for event in events:
+            Event.objects.create(
+                summary=event.get('summary', 'No summary'),
+                start=event['start'].get('dateTime', event['start'].get('date'))
+            )
+
+        return {'events': list(Event.objects.all().values('start', 'summary'))}
+
+    except HttpError as error:
+        return {'error': str(error)}
+
+def list_events(request):
+    result = update_calendar_events()
+    if 'redirect' in result:
+        request.session['state'] = result['state']
+        return HttpResponseRedirect(result['redirect'])
+    
+    if 'error' in result:
+        return JsonResponse({"error": result['error']}, status=500)
+
+    return JsonResponse({"events": result['events']})
 
 def google_calendar_events(request):
     creds = None
@@ -214,17 +262,41 @@ def delete_google_calendar_event(event_id):
         return {"error": str(error)}
     
 @csrf_exempt
+def delete_google_calendar_event(event_id):
+    creds = None
+    if os.path.exists(TOKEN_PATH):
+        creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
+
+    if not creds or not creds.valid:
+        return {"error": "Credentials are not valid or expired."}
+
+    try:
+        service = build("calendar", "v3", credentials=creds)
+        service.events().delete(calendarId='primary', eventId=event_id).execute()
+        return {"message": "Event deleted successfully"}
+
+    except HttpError as error:
+        return {"error": str(error)}
+        
+@csrf_exempt
 def delete_event(request):
     if request.method == "POST":
-        data = json.loads(request.body)
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON"}, status=400)
+
         event_id = data.get('event_id')
         if not event_id:
             return JsonResponse({"error": "event_id is required"}, status=400)
+
         result = delete_google_calendar_event(event_id)
         if 'error' in result:
             return JsonResponse(result, status=500)
         return JsonResponse(result)
+
     return JsonResponse({"error": "Invalid request method"}, status=400)
+
 
 
 @csrf_exempt
@@ -274,3 +346,16 @@ def update_event(request):
         return JsonResponse(result)
     return JsonResponse({"error": "Invalid request method"}, status=400)
 
+@require_POST
+def mark_event_done(request):
+    event_id = request.POST.get('eventId')
+    if not event_id:
+        return JsonResponse({'error': 'No event ID provided'}, status=400)
+    
+    try:
+        event = Event.objects.get(id=event_id)
+        event.done = True  # Assuming you have a 'done' field in your model
+        event.save()
+        return JsonResponse({'success': 'Event marked as done'})
+    except Event.DoesNotExist:
+        return JsonResponse({'error': 'Event not found'}, status=404)

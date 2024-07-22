@@ -12,6 +12,7 @@ class User(models.Model):
 class Event(models.Model):
     summary = models.CharField(max_length=255)
     start = models.DateTimeField()
+    done = models.BooleanField(default=False)
     
     def __str__(self):
         return f"{self.summary} - {self.start}"
