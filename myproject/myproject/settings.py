@@ -32,7 +32,6 @@ BACKEND_URL = os.getenv('BACKEND_URL')
 
 # settings.py
 
-GOOGLE_CLIENT_ID = '932125669114-gmrcq6oi32c0tatus1dectjp4iouaopi.apps.googleusercontent.com'
 GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CREDENTIALS_PATH')
 GOOGLE_REDIRECT_URI = f"{BACKEND_URL}googlecalendar/oauth2callback"
 GOOGLE_API_SCOPES = ['https://www.googleapis.com/auth/calendar']
@@ -59,7 +58,24 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'chatbot',
+    'social_django'
 ]
+
+AUTHENTICATION_BACKENDS = [
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv('GOOGLE_CLIENT_ID')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = GOOGLE_CLIENT_SECRET
+
+LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
+
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
@@ -71,7 +87,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware'
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware'
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -107,6 +124,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -170,3 +189,11 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+}
+
+SESSION_COOKIE_AGE = 30 * 60  # 30 minutes

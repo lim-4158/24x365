@@ -6,6 +6,7 @@ import Welcome from './components/Welcome';
 import ChatComponent from './components/ChatComponent';
 import ConnectGoogleCalendar from './components/ConnectGoogleCalendar';
 import UserCalendar from './components/UserCalendar';
+import MainPage from './components/MainPage';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<Welcome />} /> 
+          <Route path="/main" element={<MainPage />} />
           <Route path="/chatbot" element={<ChatComponent />} /> 
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />

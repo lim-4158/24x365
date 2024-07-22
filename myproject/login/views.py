@@ -1,7 +1,6 @@
+from django.contrib.auth import authenticate, login, logout
 from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.authtoken.models import Token
-from django.contrib.auth import authenticate
 from .serializers import UserSerializer, LoginSerializer
 
 class RegisterView(generics.CreateAPIView):
@@ -16,6 +15,12 @@ class LoginView(generics.GenericAPIView):
         user = authenticate(username=serializer.validated_data['username'],
                             password=serializer.validated_data['password'])
         if user:
-            token, created = Token.objects.get_or_create(user=user)
-            return Response({"token": token.key})
+            login(request, user)
+            return Response({"detail": "Login successful"})
         return Response({"error": "Invalid Credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
+class LogoutView(generics.GenericAPIView):
+
+    def post(self, request):
+        logout(request)
+        return Response({"detail": "Logout successful"}, status=status.HTTP_200_OK)
