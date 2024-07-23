@@ -71,13 +71,15 @@ def update_calendar_events():
         for event in events:
             Event.objects.create(
                 summary=event.get('summary', 'No summary'),
-                start=event['start'].get('dateTime', event['start'].get('date'))
+                start=event['start'].get('dateTime', event['start'].get('date')),
+                event_id=event['id']  # Save the event_id
             )
 
-        return {'events': list(Event.objects.all().values('start', 'summary'))}
+        return {'events': list(Event.objects.all().values('start', 'summary', 'event_id'))}
 
     except HttpError as error:
         return {'error': str(error)}
+
 
 def list_events(request):
     result = update_calendar_events()
@@ -261,23 +263,6 @@ def delete_google_calendar_event(event_id):
 
     except HttpError as error:
         return {"error": str(error)}
-    
-@csrf_exempt
-def delete_google_calendar_event(event_id):
-    creds = None
-    if os.path.exists(TOKEN_PATH):
-        creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
-
-    if not creds or not creds.valid:
-        return {"error": "Credentials are not valid or expired."}
-
-    try:
-        service = build("calendar", "v3", credentials=creds)
-        service.events().delete(calendarId='primary', eventId=event_id).execute()
-        return {"message": "Event deleted successfully"}
-
-    except HttpError as error:
-        return {"error": str(error)}
         
 @csrf_exempt
 def delete_event(request):
@@ -287,14 +272,19 @@ def delete_event(request):
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON"}, status=400)
 
-        event_id = data.get('event_id')
-        if not event_id:
-            return JsonResponse({"error": "event_id is required"}, status=400)
+        event_ids = data.get('event_ids')
+        if not event_ids:
+            return JsonResponse({"error": "event_ids are required"}, status=400)
 
-        result = delete_google_calendar_event(event_id)
-        if 'error' in result:
-            return JsonResponse(result, status=500)
-        return JsonResponse(result)
+        results = []
+        for event_id in event_ids:
+            result = delete_google_calendar_event(event_id)
+            results.append(result)
+
+        if any('error' in result for result in results):
+            return JsonResponse({"results": results}, status=500)
+        
+        return JsonResponse({"results": results})
 
     return JsonResponse({"error": "Invalid request method"}, status=400)
 

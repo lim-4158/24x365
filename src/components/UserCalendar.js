@@ -48,7 +48,7 @@ function UserCalendar() {
 
   return (
     <div>
-      <h2 style={{ color: 'white' }}>Your Google Calendar</h2> {/* White text color */}
+      <h2 style={{ color: 'white', fontSize: '40px', textAlignLast: 'center' }}>Your Google Calendar</h2> {/* White text color */}
       <iframe
         src={calendarUrl}
         style={{ border: 0 }}

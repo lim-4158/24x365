@@ -58,9 +58,6 @@ const ChatComponent = () => {
                     />
                     <button onClick={sendMessage} className="send-button">Send</button>
                 </div>
-                <button onClick={() => navigate('/usercalendar')} className="welcome-button register">
-                    Go to Calendar
-                </button>
             </div>
         </div>
     );

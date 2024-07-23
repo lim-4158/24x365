@@ -1,5 +1,5 @@
 // MainPage.js
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
@@ -11,6 +11,7 @@ import './MainPage.css';
 
 const MainPage = () => {
   const navigate = useNavigate();
+  const [selectedTab, setSelectedTab] = useState(0);
 
   // Function to check if the user is authenticated
   const isAuthenticated = () => {
@@ -21,13 +22,23 @@ const MainPage = () => {
   useEffect(() => {
     if (!isAuthenticated()) {
       navigate('/login'); // Redirect to login page if not authenticated
+    } else {
+      const savedTabIndex = localStorage.getItem('selectedTabIndex');
+      if (savedTabIndex !== null) {
+        setSelectedTab(parseInt(savedTabIndex, 10));
+      }
     }
   }, [navigate]);
+
+  const handleSelect = (index) => {
+    setSelectedTab(index);
+    localStorage.setItem('selectedTabIndex', index);
+  };
 
   return (
     <div className="main-page-container">
       <div className="tabs-container">
-        <Tabs>
+        <Tabs selectedIndex={selectedTab} onSelect={handleSelect}>
           <TabList>
             <Tab>ChatBot</Tab>
             <Tab>User Calendar</Tab>
