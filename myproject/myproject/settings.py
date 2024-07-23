@@ -28,12 +28,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
 GOOGLE_CREDENTIALS_PATH = os.getenv('GOOGLE_CREDENTIALS_PATH')
+BACKEND_URL = os.getenv('BACKEND_URL')
 
 # settings.py
 
 GOOGLE_CLIENT_ID = '932125669114-gmrcq6oi32c0tatus1dectjp4iouaopi.apps.googleusercontent.com'
 GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CREDENTIALS_PATH')
-GOOGLE_REDIRECT_URI = 'https://two4x365-1.onrender.com/googlecalendar/oauth2callback'
+GOOGLE_REDIRECT_URI = f"{BACKEND_URL}googlecalendar/oauth2callback"
 GOOGLE_API_SCOPES = ['https://www.googleapis.com/auth/calendar']
 
 

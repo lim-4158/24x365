@@ -4,15 +4,24 @@ import datetime
 from django.http import JsonResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect
+from dotenv import load_dotenv
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import Flow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from django.views.decorators.http import require_GET
+from .models import User
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Access the environment variables
+FRONTEND_URL = os.getenv('FRONTEND_URL')
+BACKEND_URL = os.getenv('BACKEND_URL')
 
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
-REDIRECT_URI = "https://two4x365.onrender.com/googlecalendar/oauth2callback"
+REDIRECT_URI = f"{BACKEND_URL}googlecalendar/oauth2callback"
 TOKEN_PATH = os.path.join(os.path.dirname(__file__), "token.json")
 
 # Set the environment variable to allow HTTP connections
@@ -49,6 +58,24 @@ def google_calendar_events(request):
 
     try:
         service = build("calendar", "v3", credentials=creds)
+
+        # Extract user info and save to the database
+        user_info_service = build('oauth2', 'v2', credentials=creds)
+        user_info = user_info_service.userinfo().get().execute()
+        email = user_info['email']
+        username = user_info.get('name', '')
+
+        print(f"User info: {user_info}")  # Debugging line
+
+        # Check if user exists in the database
+        user, created = User.objects.get_or_create(email=email)
+        if created:
+            user.username = username
+            user.save()
+            print(f"User created: {username} ({email})")
+        else:
+            print(f"User exists: {username} ({email})")
+
         now = datetime.datetime.now().isoformat() + "Z"
         events_result = service.events().list(
             calendarId='primary', timeMin=now,
@@ -66,10 +93,13 @@ def google_calendar_events(request):
         request.session['events'] = events_list
 
         # Redirect to React app route for displaying events
-        return HttpResponseRedirect('https://two4x365-1.onrender.com/usercalendar')  # Adjust URL to your React app
+        return HttpResponseRedirect(f"{FRONTEND_URL}usercalendar")  # Adjust URL to your React app
 
     except HttpError as error:
         return JsonResponse({"error": str(error)}, status=500)
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")  # Debugging line
+        return JsonResponse({"error": str(e)}, status=500)
 
 def create_google_calendar_event(summary, start, end):
     creds = None
@@ -132,7 +162,25 @@ def oauth2callback(request):
         creds = flow.credentials
         with open(TOKEN_PATH, 'w') as token:
             token.write(creds.to_json())
-        return redirect('google-calendar-events')
+
+        # Extract user info and save to the database
+        user_info_service = build('oauth2', 'v2', credentials=creds)
+        user_info = user_info_service.userinfo().get().execute()
+        email = user_info['email']
+        username = user_info.get('name', '')
+
+        print(f"User info: {user_info}")  # Debugging line
+
+        # Check if user exists in the database
+        user, created = User.objects.get_or_create(email=email)
+        if created:
+            user.username = username
+            user.save()
+            print(f"User created: {username} ({email})")
+        else:
+            print(f"User exists: {username} ({email})")
+
+        return redirect('google_calendar_events')
     except Exception as e:
         print(f"An error occurred: {e}")
         return JsonResponse({"error": str(e)}, status=500)

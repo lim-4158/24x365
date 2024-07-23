@@ -16,6 +16,9 @@ const AddEvent = () => {
   const [start, setStart] = useState(formatDateTimeLocal(defaultStart));
   const [end, setEnd] = useState(formatDateTimeLocal(defaultEnd));
 
+  // Access the environment variable
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -27,7 +30,7 @@ const AddEvent = () => {
 
     try {
       alert(JSON.stringify(event))
-      const response = await fetch("https://two4x365.onrender.com/googlecalendar/create_events", {
+      const response = await fetch(`${BACKEND_URL}googlecalendar/create_events`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
