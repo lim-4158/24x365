@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import GoogleSignInButton from './GoogleSignInButton'; // Import GoogleSignInButton
 import './Register.css';
 
 const Register = () => {
@@ -17,7 +18,7 @@ const Register = () => {
     e.preventDefault();
     try {
       await axios.post(REGISTER_URL, { username, password });
-      setMessage('Registration successful');
+      setMessage('Registration successful. Please connect with Google to use our services.');
       setRegistered(true);
     } catch (error) {
       console.error('Registration error:', error);
@@ -54,11 +55,22 @@ const Register = () => {
           </div>
           <button type="submit" className="register-button">Register</button>
         </form>
-        {message && <p className={`message ${registered ? 'success' : 'error'}`}>{message}</p>}
+        {message && (
+          <div className="message-container">
+            <p className={`message ${registered ? 'success' : 'error'}`}>
+              {message}
+            </p>
+          </div>
+        )}
         {registered && (
-          <button onClick={handleLoginClick} className="login-link">
-            Proceed to Login
-          </button>
+          <div className="centered-container">
+            <div className="google-signin-button-container">
+              <GoogleSignInButton /> {/* Render GoogleSignInButton after registration */}
+            </div>
+            <button onClick={handleLoginClick} className="login-link">
+              Proceed to Login
+            </button>
+          </div>
         )}
       </div>
     </div>

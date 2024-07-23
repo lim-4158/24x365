@@ -12,7 +12,8 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from django.views.decorators.http import require_GET
 from django.views.decorators.http import require_POST
-from .models import User, Event
+from django.contrib.auth.decorators import login_required
+from .models import User, Event, GoogleAuthRecord
 
 # Load environment variables from .env file
 load_dotenv()
@@ -128,7 +129,7 @@ def google_calendar_events(request):
                 start=event['start'].get('dateTime', event['start'].get('date'))
             )
 
-        return HttpResponseRedirect(f'{FRONTEND_URL}usercalendar')
+        return HttpResponseRedirect(f'{FRONTEND_URL}main')
 
     except HttpError as error:
         return JsonResponse({"error": str(error)}, status=500)

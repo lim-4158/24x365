@@ -1,3 +1,4 @@
+// MainPage.js
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
@@ -6,6 +7,7 @@ import ChatComponent from './ChatComponent';
 import GoogleSignInButton from './GoogleSignInButton';
 import UserCalendar from './UserCalendar';
 import EventChecklist from './EventChecklist';
+import './MainPage.css';
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -24,27 +26,29 @@ const MainPage = () => {
 
   return (
     <div className="main-page-container">
-      <Tabs>
-        <TabList>
-          <Tab>ChatBot</Tab>
-          <Tab>Google Sign-In</Tab>
-          <Tab>User Calendar</Tab>
-          <Tab>Event Checklist</Tab>
-        </TabList>
+      <div className="tabs-container">
+        <Tabs>
+          <TabList>
+            <Tab>ChatBot</Tab>
+            <Tab>User Calendar</Tab>
+            <Tab>Event Checklist</Tab>
+            <Tab>Reconnect with Google</Tab>
+          </TabList>
 
-        <TabPanel>
-          <ChatComponent />
-        </TabPanel>
-        <TabPanel>
-          <GoogleSignInButton />
-        </TabPanel>
-        <TabPanel>
-          <UserCalendar />
-        </TabPanel>
-        <TabPanel>
-          <EventChecklist />
-        </TabPanel>
-      </Tabs>
+          <TabPanel>
+            <ChatComponent />
+          </TabPanel>
+          <TabPanel>
+            <UserCalendar />
+          </TabPanel>
+          <TabPanel>
+            <EventChecklist />
+          </TabPanel>
+          <TabPanel>
+            <GoogleSignInButton />
+          </TabPanel>
+        </Tabs>
+      </div>
     </div>
   );
 };

@@ -16,3 +16,10 @@ class Event(models.Model):
     
     def __str__(self):
         return f"{self.summary} - {self.start}"
+    
+class GoogleAuthRecord(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    authenticated_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} authenticated at {self.authenticated_at}"

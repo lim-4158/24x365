@@ -37,18 +37,18 @@ function UserCalendar() {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div style={{ color: 'white' }}>Loading...</div>;
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return <div style={{ color: 'white' }}>{error}</div>;
   }
 
   const calendarUrl = `https://calendar.google.com/calendar/embed?src=${calendarId}&ctz=${timezone}`;
 
   return (
     <div>
-      <h2>Your Google Calendar</h2>
+      <h2 style={{ color: 'white' }}>Your Google Calendar</h2> {/* White text color */}
       <iframe
         src={calendarUrl}
         style={{ border: 0 }}

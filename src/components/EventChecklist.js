@@ -47,24 +47,27 @@ const EventChecklist = () => {
     };
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <div style={{ color: 'white' }}>Loading...</div>;
     }
 
     if (error) {
-        return <div>{error}</div>;
+        return <div style={{ color: 'white' }}>{error}</div>;
     }
 
     return (
-        <div>
-            <h1>Event Checklist</h1>
+        <div style={{ color: 'white', padding: '20px' }}> {/* White text color and padding */}
+            <h1 style={{ color: 'white' }}>Event Checklist</h1>
             <ul>
                 {events.length === 0 ? (
-                    <li>No events for today!</li>
+                    <li style={{ color: 'white' }}>No events for today!</li>
                 ) : (
                     events.map(event => (
                         <li
                             key={event.uniqueId} // Use uniqueId as the key
-                            style={{ textDecoration: checkedEvents.has(event.uniqueId) ? 'line-through' : 'none' }}
+                            style={{ 
+                                textDecoration: checkedEvents.has(event.uniqueId) ? 'line-through' : 'none',
+                                color: 'white' // Ensure text is white
+                            }}
                         >
                             <input
                                 type="checkbox"
@@ -72,7 +75,7 @@ const EventChecklist = () => {
                                 checked={checkedEvents.has(event.uniqueId)}
                                 onChange={() => handleCheckboxChange(event.uniqueId)}
                             />
-                            <label htmlFor={`event-${event.uniqueId}`}>
+                            <label htmlFor={`event-${event.uniqueId}`} style={{ color: 'white' }}>
                                 {event.summary} - {new Date(event.start).toLocaleString()}
                             </label>
                         </li>

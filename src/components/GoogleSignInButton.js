@@ -31,7 +31,7 @@ const GoogleSignInButton = () => {
   const handleConnectClick = () => {
     if (isAuthenticated) {
       // Redirect to the calendar display page
-      window.location.href = `${FRONTEND_URL}usercalendar`;
+      window.location.href = `${FRONTEND_URL}main`;
     } else {
       // Redirect to the Google authentication endpoint
       window.location.href = `${BACKEND_URL}googlecalendar/events`;
