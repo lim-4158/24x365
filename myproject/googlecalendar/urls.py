@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import google_calendar_events, oauth2callback, create_event, force_reauthentication, get_user_calendar_id, check_google_auth, delete_event, update_event
+from .views import google_calendar_events, oauth2callback, create_event, force_reauthentication, get_user_calendar_id, check_google_auth, delete_event, update_event, list_events, mark_event_done
 
 urlpatterns = [
     path("events", google_calendar_events, name="google-calendar-events"),
@@ -9,5 +9,7 @@ urlpatterns = [
     path("display_events", get_user_calendar_id, name="display-events"),
     path("check_auth", check_google_auth, name="check-auth"),
     path("delete_events", delete_event, name="delete-event"),
-    path("update_events", update_event, name="update-event")
+    path("update_events", update_event, name="update-event"),
+    path("list_events", list_events, name="list-event"),
+    path('mark_event_done', mark_event_done, name='mark-event-done'),
 ]

@@ -2,13 +2,11 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
-import GoogleSignInButton from './GoogleSignInButton';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -20,14 +18,10 @@ const Login = () => {
       const response = await axios.post(`${BACKEND_URL}api/login/`, { username, password });
       localStorage.setItem('token', response.data.token);
       setMessage('Login successful');
-      setIsLoggedIn(true);
+      navigate('/main'); // Redirect to the main page after successful login
     } catch (error) {
       setMessage('Login failed');
     }
-  };
-
-  const redirectTo = (path) => {
-    navigate(path);
   };
 
   const handleGoogleSignInClick = () => {
@@ -60,14 +54,7 @@ const Login = () => {
           </div>
           <button type="submit" className="login-button">Sign In</button>
         </form>
-        {message && <p className={`message ${isLoggedIn ? 'success' : 'error'}`}>{message}</p>}
-        {isLoggedIn && (
-          <div className="navigation-buttons">
-            <button onClick={() => redirectTo('/chatbot')}>Chatbot</button>
-            <button onClick={() => redirectTo('/usercalendar')}>Calendar</button>
-            <GoogleSignInButton onClick={handleGoogleSignInClick} />
-          </div>
-        )}
+        {message && <p className={`message ${message === 'Login successful' ? 'success' : 'error'}`}>{message}</p>}
       </div>
     </div>
   );

@@ -13,6 +13,7 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.23.1",
     "react-scripts": "5.0.1",
+    "react-tabs": "^6.0.2",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -42,7 +43,6 @@
   "devDependencies": {
     "tailwindcss": "^3.4.3",
     "webpack": "^4.42.0"
-  }
-  ,
-  "proxy": "https://two4x365.onrender.com/"
+  },
+  "proxy": "http://127.0.0.1:8000/"
 }

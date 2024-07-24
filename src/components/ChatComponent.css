@@ -18,6 +18,7 @@
     max-width: 90%;
     display: flex;
     flex-direction: column;
+    align-items: stretch;
     backdrop-filter: blur(10px);
 }
 
@@ -104,4 +105,21 @@
 
 .messages::-webkit-scrollbar-thumb:hover {
     background: #555;
+}
+
+/* Styles for auth-issue text */
+.auth-issue {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #ff0000;
+    text-align: center;
+}
+
+.auth-issue a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.auth-issue a:hover {
+    text-decoration: underline;
 }
