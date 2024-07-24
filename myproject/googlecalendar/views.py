@@ -33,7 +33,17 @@ def get_google_credentials():
     credentials_json = os.getenv('GOOGLE_CREDENTIALS')
     if not credentials_json:
         raise ValueError("GOOGLE_CREDENTIALS environment variable is not set")
-    return json.loads(credentials_json)
+    
+    creds = json.loads(credentials_json)
+    credentials = Credentials.from_authorized_user_info(creds, SCOPES)
+    
+    # Check if the token is expired and refresh if needed
+    if credentials.expired and credentials.refresh_token:
+        credentials.refresh(Request())
+        # Save the refreshed credentials back to the environment or update your storage
+        os.environ['GOOGLE_CREDENTIALS'] = credentials.to_json()
+
+    return credentials
 
 def update_calendar_events():
     creds = None
@@ -94,9 +104,11 @@ def list_events(request):
 
 def google_calendar_events(request):
     creds = None
+    # Check if the token file exists and load credentials
     if os.path.exists(TOKEN_PATH):
         creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
 
+    # If credentials are not valid, handle refresh or re-authentication
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
@@ -113,6 +125,7 @@ def google_calendar_events(request):
             return HttpResponseRedirect(authorization_url)
 
     try:
+        # Build the Google Calendar service
         service = build("calendar", "v3", credentials=creds)
         now = datetime.datetime.now().isoformat() + "Z"
         events_result = service.events().list(
@@ -242,10 +255,19 @@ def check_google_auth(request):
         creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
         if creds and creds.valid:
             return JsonResponse({"authenticated": True})
+        elif creds and creds.expired and creds.refresh_token:
+            try:
+                creds.refresh(Request())
+                with open(TOKEN_PATH, 'w') as token_file:
+                    token_file.write(creds.to_json())
+                return JsonResponse({"authenticated": True})
+            except Exception as e:
+                return JsonResponse({"authenticated": False, "error": str(e)}, status=500)
         else:
             return JsonResponse({"authenticated": False})
     else:
         return JsonResponse({"authenticated": False})
+
     
 @csrf_exempt
 def delete_google_calendar_event(event_id):

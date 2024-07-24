@@ -1,4 +1,4 @@
-// ChatComponent.js
+// src/components/ChatComponent.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -57,6 +57,9 @@ const ChatComponent = () => {
                         className="chat-input"
                     />
                     <button onClick={sendMessage} className="send-button">Send</button>
+                </div>
+                <div className="auth-issue">
+                    If there are issues with authentication, please <a href={`${BACKEND_URL}googlecalendar/events`}>click here</a>.
                 </div>
             </div>
         </div>

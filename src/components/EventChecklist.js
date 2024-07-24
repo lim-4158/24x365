@@ -86,31 +86,37 @@ const EventChecklist = () => {
     return (
         <div style={{ color: 'white', padding: '20px' }}> {/* White text color and padding */}
             <h1 style={{ color: 'white', fontSize: '40px' }}>Event Checklist</h1>
-            <ul>
-                {events.length === 0 ? (
-                    <li style={{ color: 'white' }}>No events for today!</li>
-                ) : (
-                    events.map(event => (
-                        <li
-                            key={event.uniqueId} // Use uniqueId as the key
-                            style={{ 
-                                textDecoration: checkedEvents.has(event.uniqueId) ? 'line-through' : 'none',
-                                color: 'white' // Ensure text is white
-                            }}
-                        >
-                            <input
-                                type="checkbox"
-                                id={`event-${event.uniqueId}`}
-                                checked={checkedEvents.has(event.uniqueId)}
-                                onChange={() => handleCheckboxChange(event.uniqueId)}
-                            />
-                            <label htmlFor={`event-${event.uniqueId}`} style={{ color: 'white' }}>
-                                {event.summary} - {new Date(event.start).toLocaleString()}
-                            </label>
-                        </li>
-                    ))
-                )}
-            </ul>
+            {loading ? (
+                <p style={{ color: 'white' }}>Loading events...</p> // Loading message
+            ) : error ? (
+                <p style={{ color: 'white' }}>{error}</p> // Error message
+            ) : (
+                <ul>
+                    {events.length === 0 ? (
+                        <li style={{ color: 'white' }}>No events for today!</li>
+                    ) : (
+                        events.map(event => (
+                            <li
+                                key={event.uniqueId} // Use uniqueId as the key
+                                style={{ 
+                                    textDecoration: checkedEvents.has(event.uniqueId) ? 'line-through' : 'none',
+                                    color: 'white' // Ensure text is white
+                                }}
+                            >
+                                <input
+                                    type="checkbox"
+                                    id={`event-${event.uniqueId}`}
+                                    checked={checkedEvents.has(event.uniqueId)}
+                                    onChange={() => handleCheckboxChange(event.uniqueId)}
+                                />
+                                <label htmlFor={`event-${event.uniqueId}`} style={{ color: 'white' }}>
+                                    {event.summary} - {new Date(event.start).toLocaleString()}
+                                </label>
+                            </li>
+                        ))
+                    )}
+                </ul>
+            )}
             {events.length > 0 && (
                 <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}> {/* Center the button */}
                     <button
