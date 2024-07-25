@@ -35,15 +35,16 @@ def get_google_credentials():
         raise ValueError("GOOGLE_CREDENTIALS environment variable is not set")
     
     creds = json.loads(credentials_json)
-    credentials = Credentials.from_authorized_user_info(creds, SCOPES)
-    
-    # Check if the token is expired and refresh if needed
-    if credentials.expired and credentials.refresh_token:
-        credentials.refresh(Request())
-        # Save the refreshed credentials back to the environment or update your storage
-        os.environ['GOOGLE_CREDENTIALS'] = credentials.to_json()
-
-    return credentials
+    try:
+        credentials = Credentials.from_authorized_user_info(creds, SCOPES)
+        # Check if the token is expired and refresh if needed
+        if credentials.expired and credentials.refresh_token:
+            credentials.refresh(Request())
+            # Save the refreshed credentials back to the environment or update your storage
+            os.environ['GOOGLE_CREDENTIALS'] = credentials.to_json()
+            return credentials
+    except:
+        return creds
 
 def update_calendar_events():
     creds = None
