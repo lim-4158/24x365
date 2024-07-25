@@ -48,7 +48,7 @@ const GoogleSignInButton = () => {
 
   return (
     <div>
-      <p style={{ color: 'white' }}>To reauthenticate to Google, please click the button:</p>
+      <p style={{ color: 'white', fontSize: '20px' }}>To reauthenticate to Google, please click the button:</p>
       <div onClick={handleConnectClick} style={{ cursor: 'pointer', display: 'inline-block', marginTop: '10px' }}>
         <button className="gsi-material-button">
           <div className="gsi-material-button-state"></div>

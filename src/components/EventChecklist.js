@@ -87,9 +87,11 @@ const EventChecklist = () => {
         <div style={{ color: 'white', padding: '20px' }}> {/* White text color and padding */}
             <h1 style={{ color: 'white', fontSize: '40px' }}>Event Checklist</h1>
             {loading ? (
-                <p style={{ color: 'white' }}>Loading events...</p> // Loading message
+                <p style={{ color: 'white', fontSize: '20px' }}>Loading events...</p> // Loading message
             ) : error ? (
-                <p style={{ color: 'white' }}>{error}</p> // Error message
+                <div className="auth-issue" style={{ color: 'white', fontSize: '20px' }}>
+                    Error fetching events. Please <a href={`${BACKEND_URL}googlecalendar/events`} style={{ color: 'lightblue' }}>click here</a> to reauthenticate.
+                </div>
             ) : (
                 <ul>
                     {events.length === 0 ? (

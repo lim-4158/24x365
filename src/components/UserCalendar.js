@@ -37,18 +37,22 @@ function UserCalendar() {
   }, []);
 
   if (loading) {
-    return <div style={{ color: 'white' }}>Loading...</div>;
+    return <div style={{ color: 'white', fontSize: '20px' }}>Loading...</div>;
   }
 
   if (error) {
-    return <div style={{ color: 'white' }}>{error}</div>;
+    return (
+      <div style={{ color: 'white', fontSize: '20px' }}>
+        Error fetching events. Please <a href={`${process.env.REACT_APP_BACKEND_URL}googlecalendar/events`} style={{ color: 'lightblue' }}>click here</a> to reauthenticate.
+      </div>
+    );
   }
 
   const calendarUrl = `https://calendar.google.com/calendar/embed?src=${calendarId}&ctz=${timezone}`;
 
   return (
     <div>
-      <h2 style={{ color: 'white', fontSize: '40px', textAlignLast: 'center' }}>Your Google Calendar</h2> {/* White text color */}
+      <h2 style={{ color: 'white', fontSize: '40px', textAlign: 'center' }}>Your Google Calendar</h2> {/* White text color */}
       <iframe
         src={calendarUrl}
         style={{ border: 0 }}
