@@ -1,5 +1,8 @@
+# googlecalendar/views.py
+
 import os
 import json
+from datetime import datetime, timezone
 import datetime
 from django.http import JsonResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
@@ -65,49 +68,6 @@ def google_calendar_events(request):
 
     except HttpError as error:
         return JsonResponse({"error": str(error)}, status=500)
-
-
-# @csrf_exempt
-# def create_event(request):
-#     if request.method == "POST":
-#         creds = None
-
-#         if os.path.exists(TOKEN_PATH):
-#             creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
-
-#         if not creds or not creds.valid:
-#             return JsonResponse({"error": "Credentials are not valid or expired."}, status=401)
-
-#         try:
-#             service = build("calendar", "v3", credentials=creds)
-#             data = json.loads(request.body)
-
-#             # Print event data for debugging
-#             print("Event Data:", json.dumps(data, indent=2))
-
-#             event = {
-#                 'summary': data['summary'],
-#                 'start': {
-#                     'dateTime': data['start'],
-#                     'timeZone': 'UTC',
-#                 },
-#                 'end': {
-#                     'dateTime': data['end'],
-#                     'timeZone': 'UTC',
-#                 },
-#             }
-
-#             # Print the formatted event object
-#             print("Formatted Event:", json.dumps(event, indent=2))
-
-#             event = service.events().insert(calendarId='primary', body=event).execute()
-#             return JsonResponse({"message": "Event created successfully", "event": event})
-
-#         except HttpError as error:
-#             print(f"HttpError: {error}")
-#             return JsonResponse({"error": str(error)}, status=500)
-
-#     return JsonResponse({"error": "Invalid request method"}, status=400)
 
 def create_google_calendar_event(summary, start, end):
     creds = None
@@ -219,3 +179,209 @@ def check_google_auth(request):
             return JsonResponse({"authenticated": False})
     else:
         return JsonResponse({"authenticated": False})
+    
+@csrf_exempt
+def delete_google_calendar_event(event_id):
+    creds = None
+    if os.path.exists(TOKEN_PATH):
+        creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
+
+    if not creds or not creds.valid:
+        return {"error": "Credentials are not valid or expired."}
+
+    try:
+        service = build("calendar", "v3", credentials=creds)
+        service.events().delete(calendarId='primary', eventId=event_id).execute()
+        return {"message": "Event deleted successfully"}
+
+    except HttpError as error:
+        return {"error": str(error)}
+        
+@csrf_exempt
+def delete_event(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON"}, status=400)
+
+        event_ids = data.get('event_ids')
+        if not event_ids:
+            return JsonResponse({"error": "event_ids are required"}, status=400)
+
+        results = []
+        for event_id in event_ids:
+            result = delete_google_calendar_event(event_id)
+            results.append(result)
+
+        if any('error' in result for result in results):
+            return JsonResponse({"results": results}, status=500)
+        
+        return JsonResponse({"results": results})
+
+    return JsonResponse({"error": "Invalid request method"}, status=400)
+
+
+
+@csrf_exempt
+def update_google_calendar_event(event_id, summary, start, end):
+    creds = None
+    if os.path.exists(TOKEN_PATH):
+        creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
+
+    if not creds or not creds.valid:
+        return {"error": "Credentials are not valid or expired."}
+
+    try:
+        service = build("calendar", "v3", credentials=creds)
+
+        event = service.events().get(calendarId='primary', eventId=event_id).execute()
+        event['summary'] = summary
+        event['start'] = {
+            'dateTime': start,
+            'timeZone': 'UTC',
+        }
+        event['end'] = {
+            'dateTime': end,
+            'timeZone': 'UTC',
+        }
+
+        updated_event = service.events().update(calendarId='primary', eventId=event['id'], body=event).execute()
+        return {"message": "Event updated successfully", "event": updated_event}
+
+    except HttpError as error:
+        return {"error": str(error)}
+
+@csrf_exempt
+def update_event(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        event_id = data.get('event_id')
+        summary = data.get('summary')
+        start = data.get('start')
+        end = data.get('end')
+        
+        if not event_id or not summary or not start or not end:
+            return JsonResponse({"error": "All fields (event_id, summary, start, end) are required"}, status=400)
+        
+        result = update_google_calendar_event(event_id, summary, start, end)
+        if 'error' in result:
+            return JsonResponse(result, status=500)
+        return JsonResponse(result)
+    return JsonResponse({"error": "Invalid request method"}, status=400)
+
+# def search_google_calendar_events(start_date, end_date):
+#     print("search_google_calendar_events")
+#     creds = None
+#     if os.path.exists(TOKEN_PATH):
+#         print("ok1")
+#         creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
+
+#     if not creds or not creds.valid:
+#         print("Credentials are not valid or expired.")
+#         return {"error": "Credentials are not valid or expired."}
+
+#     try:
+#         print("ok2")
+#         service = build("calendar", "v3", credentials=creds)
+        
+#         print("ok2.5")
+#         # Ensure start_date and end_date are datetime objects
+#         if isinstance(start_date, str):
+#             start_date = datetime.fromisoformat(start_date)
+#         if isinstance(end_date, str):
+#             end_date = datetime.fromisoformat(end_date)
+
+#         print("ok3")
+        
+#         # Convert to RFC3339 format
+#         time_min = start_date.isoformat() + 'Z'
+#         time_max = end_date.isoformat() + 'Z'
+
+#         print("ok4")
+
+#         events_result = service.events().list(
+#             calendarId='primary',
+#             timeMin=time_min,
+#             timeMax=time_max,
+#             singleEvents=True,
+#             orderBy='startTime'
+#         ).execute()
+
+#         print("ok5")
+#         events = events_result.get('items', [])
+
+#         print(events)
+
+#         return {
+#             "events": [
+#                 {
+#                     "id": event['id'],
+#                     "summary": event['summary'],
+#                     "start": event["start"].get("dateTime", event["start"].get("date")),
+#                     "end": event["end"].get("dateTime", event["end"].get("date"))
+#                 }
+#                 for event in events
+#             ]
+#         }
+#     except HttpError as error:
+#         print(f"An error occurred: {error}")
+#         return {"error": str(error)}
+#     except Exception as e:
+#         print(f"An unexpected error occurred: {e}")
+#         return {"error": f"An unexpected error occurred: {str(e)}"}
+
+
+def search_google_calendar_events(start_date, end_date):
+    print("search_google_calendar_events")
+    print(start_date)
+    print(end_date)
+    creds = None
+    if os.path.exists(TOKEN_PATH):
+        creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
+
+    if not creds or not creds.valid:
+        print("Credentials are not valid or expired.")
+        return {"error": "Credentials are not valid or expired."}
+
+    try:
+        service = build("calendar", "v3", credentials=creds)
+        
+        # Ensure start_date and end_date are datetime objects
+        if isinstance(start_date, str):
+            start_date = datetime.fromisoformat(start_date)
+        if isinstance(end_date, str):
+            end_date = datetime.fromisoformat(end_date)
+        
+        # Convert to UTC and then to RFC3339 format
+        time_min = start_date.astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        time_max = end_date.astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
+        events_result = service.events().list(
+            calendarId='primary',
+            timeMin=time_min,
+            timeMax=time_max,
+            singleEvents=True,
+            orderBy='startTime'
+        ).execute()
+
+        events = events_result.get('items', [])
+
+        return {
+            "events": [
+                {
+                    "id": event['id'],
+                    "summary": event['summary'],
+                    "start": event["start"].get("dateTime", event["start"].get("date")),
+                    "end": event["end"].get("dateTime", event["end"].get("date"))
+                }
+                for event in events
+            ]
+        }
+
+    except HttpError as error:
+        print(f"An error occurred: {error}")
+        return {"error": str(error)}
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return {"error": f"An unexpected error occurred: {str(e)}"}
