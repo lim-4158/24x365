@@ -1,6 +1,7 @@
 import os
 import json
 import datetime
+from time import timezone
 from django.http import JsonResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect
@@ -373,3 +374,57 @@ def mark_event_done(request):
         return JsonResponse({'success': 'Event marked as done'})
     except Event.DoesNotExist:
         return JsonResponse({'error': 'Event not found'}, status=404)
+    
+def search_google_calendar_events(start_date, end_date):
+    print("search_google_calendar_events")
+    print(start_date)
+    print(end_date)
+    creds = None
+    if os.path.exists(TOKEN_PATH):
+        creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
+
+    if not creds or not creds.valid:
+        print("Credentials are not valid or expired.")
+        return {"error": "Credentials are not valid or expired."}
+
+    try:
+        service = build("calendar", "v3", credentials=creds)
+        
+        # Ensure start_date and end_date are datetime objects
+        if isinstance(start_date, str):
+            start_date = datetime.fromisoformat(start_date)
+        if isinstance(end_date, str):
+            end_date = datetime.fromisoformat(end_date)
+        
+        # Convert to UTC and then to RFC3339 format
+        time_min = start_date.astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        time_max = end_date.astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
+        events_result = service.events().list(
+            calendarId='primary',
+            timeMin=time_min,
+            timeMax=time_max,
+            singleEvents=True,
+            orderBy='startTime'
+        ).execute()
+
+        events = events_result.get('items', [])
+
+        return {
+            "events": [
+                {
+                    "id": event['id'],
+                    "summary": event['summary'],
+                    "start": event["start"].get("dateTime", event["start"].get("date")),
+                    "end": event["end"].get("dateTime", event["end"].get("date"))
+                }
+                for event in events
+            ]
+        }
+
+    except HttpError as error:
+        print(f"An error occurred: {error}")
+        return {"error": str(error)}
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return {"error": f"An unexpected error occurred: {str(e)}"}
