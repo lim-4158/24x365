@@ -71,7 +71,7 @@ def update_calendar_events():
         service = build("calendar", "v3", credentials=creds)
         
         # Calculate the start date as the beginning of the previous week
-        today = datetime.utcnow()
+        today = datetime.now(datetime.UTC)
         start_of_previous_week = today - timedelta(days=today.weekday() + 7)
         start_of_previous_week = start_of_previous_week.replace(hour=0, minute=0, second=0, microsecond=0)
         start_of_previous_week_iso = start_of_previous_week.isoformat() + 'Z'  # 'Z' indicates UTC time
@@ -98,7 +98,6 @@ def update_calendar_events():
 
     except HttpError as error:
         return {'error': str(error)}
-
 
 def list_events(request):
     result = update_calendar_events()
@@ -136,7 +135,7 @@ def google_calendar_events(request):
     try:
         # Build the Google Calendar service
         service = build("calendar", "v3", credentials=creds)
-        now = datetime.datetime.now().isoformat() + "Z"
+        now = datetime.now().isoformat() + "Z"
         events_result = service.events().list(
             calendarId='primary', timeMin=now,
             maxResults=10, singleEvents=True,
@@ -320,7 +319,6 @@ def delete_event(request):
     return JsonResponse({"error": "Invalid request method"}, status=400)
 
 
-
 @csrf_exempt
 def update_google_calendar_event(event_id, summary, start, end):
     creds = None
@@ -404,8 +402,8 @@ def search_google_calendar_events(start_date, end_date):
             end_date = datetime.fromisoformat(end_date)
         
         # Convert to UTC and then to RFC3339 format
-        time_min = start_date.astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%fZ')
-        time_max = end_date.astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        time_min = start_date.astimezone().strftime('%Y-%m-%dT%H:%M:%S') + 'Z'
+        time_max = end_date.astimezone().strftime('%Y-%m-%dT%H:%M:%S') + 'Z'
 
         events_result = service.events().list(
             calendarId='primary',
