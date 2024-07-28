@@ -2,6 +2,7 @@ import os
 import json
 import datetime
 from time import timezone
+from datetime import datetime, timedelta
 from django.http import JsonResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect
@@ -56,7 +57,7 @@ def update_calendar_events():
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            creds_info = get_google_credentials()
+            creds_info = get_google_credentials()  # Function to get your Google credentials
             flow = Flow.from_client_config(creds_info, SCOPES)
             flow.redirect_uri = REDIRECT_URI
             authorization_url, state = flow.authorization_url(
@@ -68,10 +69,16 @@ def update_calendar_events():
 
     try:
         service = build("calendar", "v3", credentials=creds)
-        now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
+        
+        # Calculate the start date as the beginning of the previous week
+        today = datetime.utcnow()
+        start_of_previous_week = today - timedelta(days=today.weekday() + 7)
+        start_of_previous_week = start_of_previous_week.replace(hour=0, minute=0, second=0, microsecond=0)
+        start_of_previous_week_iso = start_of_previous_week.isoformat() + 'Z'  # 'Z' indicates UTC time
+
         events_result = service.events().list(
-            calendarId='primary', timeMin=now,
-            maxResults=10, singleEvents=True,
+            calendarId='primary', timeMin=start_of_previous_week_iso,
+            maxResults=100, singleEvents=True,  # Adjust maxResults as needed
             orderBy='startTime'
         ).execute()
         events = events_result.get('items', [])
