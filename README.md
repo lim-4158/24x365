@@ -54,8 +54,7 @@ As a person that lives a hectic lifestyle, I would like to add things to my sche
 
 # Flow of the Web App
 
-
-
+![MindMap Frame 1](images/MindMap%20-%20Frame%201.jpg)
 
 
 
