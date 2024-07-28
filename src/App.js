@@ -8,6 +8,7 @@ import ConnectGoogleCalendar from './components/ConnectGoogleCalendar';
 import UserCalendar from './components/UserCalendar';
 import EventChecklist from './components/EventChecklist';
 import Navigation from './components/Navigation';
+import GoogleSignInButton from './components/GoogleSignInButton';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
                 <Route path="/calendar" element={<UserCalendar />} />
                 <Route path="/checklist" element={<EventChecklist />} />
                 <Route path="/connect" element={<ConnectGoogleCalendar />} />
+                <Route path="/googlesignin" element={<GoogleSignInButton />} />
               </Routes>
             </>
           } />

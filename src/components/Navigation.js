@@ -9,7 +9,7 @@ const Navigation = () => {
         <li><Link to="/chat">ChatBot</Link></li>
         <li><Link to="/calendar">Calendar</Link></li>
         <li><Link to="/checklist">Event Checklist</Link></li>
-        <li><Link to="/connect">Connect Google</Link></li>
+        <li><Link to="/googlesignin">Connect Google</Link></li>
       </ul>
     </nav>
   );
