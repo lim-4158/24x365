@@ -1,29 +1,9 @@
 /* src/components/UserCalendar.css */
-
-body {
-  margin: 0;
-  font-family: 'Poppins', sans-serif;
-  background-color: #282c34; /* Set a background color if needed */
-}
-
-.user-calendar-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh; /* Ensure the container takes the full height of the viewport */
-  padding: 20px;
-  text-align: center; /* Center-align the text */
-}
-
-.iframe-container {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-
 .user-calendar {
-  width: 100%;
+  font-family: 'Poppins', sans-serif;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 .calendar-navigation {

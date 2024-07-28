@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import './UserCalendar.css';
 
 function UserCalendar() {
   const [calendarId, setCalendarId] = useState('');
@@ -52,9 +51,9 @@ function UserCalendar() {
   const calendarUrl = `https://calendar.google.com/calendar/embed?src=${calendarId}&ctz=${timezone}`;
 
   return (
-    <div className="user-calendar-wrapper">
-      <h2 style={{ color: 'white', fontSize: '40px' }}>Your Google Calendar</h2> {/* White text color */}
-      <div className="iframe-container">
+    <div>
+      <h2 style={{ color: 'white', fontSize: '40px', textAlign: 'center' }}>Your Google Calendar</h2> {/* White text color */}
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
         <iframe
           src={calendarUrl}
           style={{ border: 0 }}

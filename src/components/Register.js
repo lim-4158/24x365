@@ -65,7 +65,7 @@ const Register = () => {
         {registered && (
           <div className="centered-container">
             <div className="google-signin-button-container">
-              <GoogleSignInButton /> {/* Render GoogleSignInButton after registration */}
+              <GoogleSignInButton showText={false} /> {/* Pass showText prop */}
             </div>
             <button onClick={handleLoginClick} className="login-link">
               Proceed to Login

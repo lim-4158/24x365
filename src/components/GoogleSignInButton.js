@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import './GoogleSignInButton.css';
 
-const GoogleSignInButton = () => {
+const GoogleSignInButton = ({ showText = true }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Environment variables from .env file
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
   const FRONTEND_URL = process.env.REACT_APP_FRONTEND_URL;
 
   useEffect(() => {
-    // Check if the user is authenticated with Google services
     fetch(`${BACKEND_URL}googlecalendar/check_auth`, {
       method: 'GET',
       credentials: 'include',
@@ -30,10 +28,8 @@ const GoogleSignInButton = () => {
 
   const handleConnectClick = () => {
     if (isAuthenticated) {
-      // Redirect to the calendar display page
       window.location.href = `${FRONTEND_URL}main`;
     } else {
-      // Redirect to the Google authentication endpoint
       window.location.href = `${BACKEND_URL}googlecalendar/events`;
     }
   };
@@ -48,7 +44,9 @@ const GoogleSignInButton = () => {
 
   return (
     <div>
-      <p style={{ color: 'white', fontSize: '20px' }}>To reauthenticate to Google, please click the button:</p>
+      {showText && (
+        <p style={{ color: 'white', fontSize: '20px' }}>To reauthenticate to Google, please click the button:</p>
+      )}
       <div onClick={handleConnectClick} style={{ cursor: 'pointer', display: 'inline-block', marginTop: '10px' }}>
         <button className="gsi-material-button">
           <div className="gsi-material-button-state"></div>
