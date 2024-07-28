@@ -93,31 +93,48 @@ const EventChecklist = () => {
                     Error fetching events. Please <a href={`${BACKEND_URL}googlecalendar/events`} style={{ color: 'lightblue' }}>click here</a> to reauthenticate.
                 </div>
             ) : (
-                <ul>
-                    {events.length === 0 ? (
-                        <li style={{ color: 'white' }}>No events for today!</li>
-                    ) : (
-                        events.map(event => (
-                            <li
-                                key={event.uniqueId} // Use uniqueId as the key
-                                style={{ 
-                                    textDecoration: checkedEvents.has(event.uniqueId) ? 'line-through' : 'none',
-                                    color: 'white' // Ensure text is white
-                                }}
-                            >
-                                <input
-                                    type="checkbox"
-                                    id={`event-${event.uniqueId}`}
-                                    checked={checkedEvents.has(event.uniqueId)}
-                                    onChange={() => handleCheckboxChange(event.uniqueId)}
-                                />
-                                <label htmlFor={`event-${event.uniqueId}`} style={{ color: 'white' }}>
-                                    {event.summary} - {new Date(event.start).toLocaleString()}
-                                </label>
-                            </li>
-                        ))
-                    )}
-                </ul>
+                events.length === 0 ? (
+                    <p style={{ color: 'white' }}>No events for today!</p>
+                ) : (
+                    <table style={{ width: '100%', color: 'white', borderCollapse: 'collapse' }}>
+                        <thead>
+                            <tr>
+                                <th style={{ border: '1px solid white', padding: '8px' }}>Select</th>
+                                <th style={{ border: '1px solid white', padding: '8px' }}>Event</th>
+                                <th style={{ border: '1px solid white', padding: '8px' }}>Date</th>
+                                <th style={{ border: '1px solid white', padding: '8px' }}>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {events.map(event => {
+                                const eventDate = new Date(event.start);
+                                return (
+                                    <tr key={event.uniqueId} style={{ textDecoration: checkedEvents.has(event.uniqueId) ? 'line-through' : 'none' }}>
+                                        <td style={{ border: '1px solid white', padding: '8px' }}>
+                                            <input
+                                                type="checkbox"
+                                                id={`event-${event.uniqueId}`}
+                                                checked={checkedEvents.has(event.uniqueId)}
+                                                onChange={() => handleCheckboxChange(event.uniqueId)}
+                                            />
+                                        </td>
+                                        <td style={{ border: '1px solid white', padding: '8px' }}>
+                                            <label htmlFor={`event-${event.uniqueId}`} style={{ color: 'white' }}>
+                                                {event.summary}
+                                            </label>
+                                        </td>
+                                        <td style={{ border: '1px solid white', padding: '8px' }}>
+                                            {eventDate.toLocaleDateString()}
+                                        </td>
+                                        <td style={{ border: '1px solid white', padding: '8px' }}>
+                                            {eventDate.toLocaleTimeString()}
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                )
             )}
             {events.length > 0 && (
                 <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}> {/* Center the button */}
