@@ -71,7 +71,7 @@ def update_calendar_events():
         service = build("calendar", "v3", credentials=creds)
         
         # Calculate the start date as the beginning of the previous week
-        today = datetime.now(datetime.UTC)
+        today = datetime.now()
         start_of_previous_week = today - timedelta(days=today.weekday() + 7)
         start_of_previous_week = start_of_previous_week.replace(hour=0, minute=0, second=0, microsecond=0)
         start_of_previous_week_iso = start_of_previous_week.isoformat() + 'Z'  # 'Z' indicates UTC time
