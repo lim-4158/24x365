@@ -7,21 +7,29 @@ import ChatComponent from './components/ChatComponent';
 import ConnectGoogleCalendar from './components/ConnectGoogleCalendar';
 import UserCalendar from './components/UserCalendar';
 import EventChecklist from './components/EventChecklist';
-import MainPage from './components/MainPage';
+import Navigation from './components/Navigation';
+import GoogleSignInButton from './components/GoogleSignInButton';
 
 function App() {
   return (
     <Router>
       <div className="App">
         <Routes>
-          <Route path="/" element={<Welcome />} /> 
-          <Route path="/main" element={<MainPage />} />
-          <Route path="/chatbot" element={<ChatComponent />} /> 
+          <Route path="/" element={<Welcome />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/connectgooglecalendar" element={<ConnectGoogleCalendar />} />
-          <Route path="/usercalendar" element={<UserCalendar />} />
-          <Route path="/eventchecklist" element={<EventChecklist />} />
+          <Route path="/*" element={
+            <>
+              <Navigation />
+              <Routes>
+                <Route path="/chat" element={<ChatComponent />} />
+                <Route path="/calendar" element={<UserCalendar />} />
+                <Route path="/checklist" element={<EventChecklist />} />
+                <Route path="/connect" element={<ConnectGoogleCalendar />} />
+                <Route path="/googlesignin" element={<GoogleSignInButton />} />
+              </Routes>
+            </>
+          } />
         </Routes>
       </div>
     </Router>

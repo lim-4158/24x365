@@ -18,7 +18,7 @@ const Login = () => {
       const response = await axios.post(`${BACKEND_URL}api/login/`, { username, password });
       localStorage.setItem('token', response.data.token);
       setMessage('Login successful');
-      navigate('/main'); // Redirect to the main page after successful login
+      navigate('/chat'); // Redirect to the main page after successful login
     } catch (error) {
       setMessage('Login failed');
     }

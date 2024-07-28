@@ -1,42 +1,11 @@
-/* MainPage.css */
 .main-page-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Center content horizontally */
-    min-height: 100vh; /* Ensure the container takes at least the full viewport height */
-    overflow: hidden; /* Prevent scrolling */
-    padding-top: 50px; /* Space for the fixed tabs */
-  }
-  
-  .tabs-container {
-    width: 100%;
-    max-width: 800px; /* Set a max width for the tabs container */
-    margin: 0 auto; /* Center the tabs container horizontally */
-    position: relative;
-  }
-  
-  .react-tabs__tab-list {
-    display: flex; /* Ensure tabs are displayed in a row */
-    justify-content: center; /* Center tabs horizontally */
-    position: fixed; /* Fix the tabs at the top */
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%); /* Center the tabs horizontally */
-    background-color: white; /* Background color to ensure readability */
-    border-bottom: 1px solid #ddd; /* Optional: Add a border for visual separation */
-    z-index: 1000; /* Ensure the tabs are above other content */
-    width: 100%; /* Make sure the tabs container takes the full width */
-  }
-  
-  .react-tabs__tab {
-    flex: 1; /* Allow each tab to take equal width */
-    text-align: center; /* Center text inside each tab */
-  }
-  
-  .react-tabs__tab-panel {
-    padding-top: 60px; /* Space for the fixed tabs */
-    width: 100%;
-    max-width: 800px; /* Match the width of the tabs container */
-    margin: 0 auto; /* Center the tab panels horizontally */
-  }
-  
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content-area {
+  flex: 1;
+  padding: 20px;
+  background-color: #f4f4f4;
+}
