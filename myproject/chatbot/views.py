@@ -17,6 +17,7 @@ openai.api_key = os.getenv('OPEN_AI_KEY')
 SGT = ZoneInfo("Asia/Singapore")
 
 def find_best_matching_event(events, user_description):
+    print("find_best_matching_event")
     if not events:
         return None
     
@@ -44,23 +45,56 @@ def find_best_matching_event(events, user_description):
         return None
 
 def parse_date_range(date_description):
-    today = datetime.now(SGT).replace(hour=0, minute=0, second=0, microsecond=0)
+    print("parse_date_range")
+    now = datetime.now(SGT)
     
-    if "tomorrow" in date_description.lower():
-        start_date = today + timedelta(days=1)
+    prompt = f"""
+    Given the following date description: "{date_description}"
+    Please interpret this and provide the start and end dates in ISO format (YYYY-MM-DDTHH:MM:SS+08:00).
+    If a single date is mentioned, assume the range is for the entire day.
+    If no specific time is mentioned, assume 00:00:00 for start time and 23:59:59 for end time.
+    The current date and time is: {now.isoformat()}
+    
+    Respond in the following format:
+    Start: [ISO formatted start date]
+    End: [ISO formatted end date]
+    """
+    print("prompt")
+
+    response = openai.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant that interprets date ranges."},
+            {"role": "user", "content": prompt}
+        ],
+        max_tokens=100
+    )
+
+    response_text = response.choices[0].message.content
+
+    try:
+
+        start_line = [line for line in response_text.split('\n') if line.startswith('Start:')][0]
+        end_line = [line for line in response_text.split('\n') if line.startswith('End:')][0]
+        
+        start_date = datetime.fromisoformat(start_line.split('Start:')[1].strip())
+        end_date = datetime.fromisoformat(end_line.split('End:')[1].strip())
+        
+        return start_date, end_date
+    except (IndexError, ValueError):
+        # If parsing fails, default to today
+        start_date = now.replace(hour=0, minute=0, second=0, microsecond=0)
         end_date = start_date + timedelta(days=1)
-    elif "next week" in date_description.lower():
-        start_date = today + timedelta(days=(7 - today.weekday()))
-        end_date = start_date + timedelta(days=7)
-    else:
-        # Default to today if no specific time frame is mentioned
-        start_date = today
-        end_date = today + timedelta(days=1)
-    
-    return start_date, end_date
+        return start_date, end_date
 
 def get_events(date_description):
+
     start_date, end_date = parse_date_range(date_description)
+
+    # Ensure the dates are timezone-aware
+    start_date = start_date.replace(tzinfo=SGT)
+    end_date = end_date.replace(tzinfo=SGT)
+
     return search_google_calendar_events(start_date, end_date)
 
 @api_view(['POST'])
@@ -85,13 +119,13 @@ def get_response(request):
 
     Guidelines:
     - For adding events: If the user provides an event name, date, and start time, assume a one-hour duration unless specified otherwise. Proceed to add the event immediately.
-    - For retrieving events: If a specific date or range is mentioned, proceed to fetch the events without asking for confirmation.
+    - For retrieving events: You can understand and interpret a wide range of date expressions. Use the get_events function with the user's date description to fetch events.
     - For modifying events: If the user specifies the event to be changed and provides new details, proceed with the update.
     - For deleting events: If the user clearly identifies an event to be removed, proceed with the deletion after a brief confirmation.
     - Only ask for clarification if critical information is missing or ambiguous.
     - After each action, briefly confirm what was done and ask if anything else is needed.
 
-    Remember: You don't have direct access to the calendar. Use the provided functions to interact with the calendar data. Always err on the side of action rather than excessive confirmation.
+    Remember: You can understand and interpret a wide variety of date and time expressions, including complex or ambiguous ones. Always use the provided functions to interact with the calendar data.
     """
     formatted_messages = [{"role": "system", "content": system_message}]
     
