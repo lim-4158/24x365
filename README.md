@@ -54,7 +54,7 @@ As a person that lives a hectic lifestyle, I would like to add things to my sche
 
 # Flow of the Web App
 
-![MindMap Frame 1](images/MindMap%20-%20Frame%201.jpg)
+![alt_text](images/App_flow.jpg)
 
 
 
@@ -66,11 +66,8 @@ As a person that lives a hectic lifestyle, I would like to add things to my sche
    <td>Frontend- React JS
    </td>
    <td>
-
-<p id="gdcalert2" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image2.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert3">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-<img src="images/image2.png" width="" alt="alt_text" title="image_tooltip">
+     
+<img src="images/react.png" width="" alt="alt_text" title="image_tooltip">
 
    </td>
   </tr>
@@ -79,10 +76,7 @@ As a person that lives a hectic lifestyle, I would like to add things to my sche
    </td>
    <td>
 
-<p id="gdcalert3" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image3.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert4">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-<img src="images/image3.png" width="" alt="alt_text" title="image_tooltip">
+<img src="images/django.png" width="" alt="alt_text" title="image_tooltip">
 
    </td>
   </tr>
@@ -91,10 +85,7 @@ As a person that lives a hectic lifestyle, I would like to add things to my sche
    </td>
    <td>
 
-<p id="gdcalert4" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image4.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert5">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-<img src="images/image4.png" width="" alt="alt_text" title="image_tooltip">
+<img src="images/postgres.png" width="" alt="alt_text" title="image_tooltip">
 
    </td>
   </tr>
@@ -103,10 +94,7 @@ As a person that lives a hectic lifestyle, I would like to add things to my sche
    </td>
    <td>
 
-<p id="gdcalert5" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image5.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert6">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-<img src="images/image5.png" width="" alt="alt_text" title="image_tooltip">
+<img src="images/github.png" width="" alt="alt_text" title="image_tooltip">
 
    </td>
   </tr>
@@ -115,10 +103,7 @@ As a person that lives a hectic lifestyle, I would like to add things to my sche
    </td>
    <td>
 
-<p id="gdcalert6" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image6.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert7">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-<img src="images/image6.png" width="" alt="alt_text" title="image_tooltip">
+<img src="images/render.png" width="" alt="alt_text" title="image_tooltip">
 
    </td>
   </tr>
@@ -189,18 +174,11 @@ Our proposed main page aims to include the various pages such that it is intuiti
 
 [MS3 Progress]
 
-We have made the main page, and utilized React’s react-tab components. This allows easier navigation between the pages, and does not need to refresh every time the user enters another page.
-
-When users refresh the page, the frontend remembers the tab that the users were using, and it will bring them back to the same tab.
+We have made the main page, and created a navigation bar that contains all the different pages. This allows easier navigation between the pages.
 
 An example of the Home Page:
 
-
-
-<p id="gdcalert7" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image7.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert8">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-![alt_text](images/image7.png "image_tooltip")
+![alt_text](images/Mainpage.png "image_tooltip")
 
 
 
@@ -219,12 +197,7 @@ Other than adding events, there are other possible scenarios, and all of them wo
 
 Below is how the flow of the chat feature would look like:
 
-
-
-<p id="gdcalert8" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image8.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert9">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-![alt_text](images/image8.png "image_tooltip")
+![alt_text](images/Chatbot_Flow.jpg "image_tooltip")
 
 
  
@@ -243,9 +216,29 @@ We have also connected to the Google Calendar API. The credentials file have bee
 
 Our chatbot can now understand users’ intentions and add events correspondingly. A confirmation message with the relevant details will be sent before interacting with users’ Google Calendar. 
 
-Next, we will aim to integrate more functions into the chatbot, i.e deleting events, modifying events, adding recurring events and retrieving events from the calendar. 
+Next, we will aim to integrate more functions into the chatbot, i.e deleting events, modifying events and retrieving events from the calendar. 
+
+[MS3 progress] 
+
+In the final milestone of our project, the chatbot is able to delete, modify, and retrieve events based on users' prompts, marking a substantial improvement in its functionality and user interaction. This advancement, however, didn't come without its challenges.
+
+To accommodate these new features, we had to expand the function calling capabilities of our system. This expansion led to some unforeseen complications. We noticed that the chatbot occasionally struggled to accurately interpret user queries, sometimes resulting in unintended functions being called. To address this issue, we undertook a comprehensive rewrite of our prompts. Our goal was to provide better guidance to the LLM, helping it more accurately understand and respond to user queries. We developed a set of guidelines and reminders for the LLM to follow, which has significantly improved its performance.
+
+[Problems]
+
+While most of the newly implemented functions are working well, we've identified event modification as an area that still needs improvement. Currently, in about 70% of cases, users need to first retrieve an event before they can successfully modify it. For instance, a user might need to ask about events scheduled for tomorrow before they can request a modification to one of those events. We recognize this as a potential point of friction in the user experience and have marked it as a priority for future refinement.
+
+The retrieval of events, which is also crucial for deletion and modification operations, presented its own set of challenges. Two main issues we encountered were: 
 
 
+
+* converting human time concepts into machine-readable formats
+* matching events in the calendar to users' descriptions, which can often differ significantly from the stored event names, e.g a user might refer to a "badminton" event as a "game".
+
+To tackle these challenges, we engineered an innovative prompt chaining solution. This approach involves breaking down complex tasks into multiple subtasks, which has proven effective in improving the model's accuracy. Specifically, we created two key functions: “parse_date_range” and “find_best_matching_event”. These functions work together to process user inputs and find the most relevant events in the calendar. By integrating these functions into our main chatbot logic, we've created a pipeline that can handle a wide range of user queries more effectively.
+
+
+## 
 
 
 ## Calendar
@@ -268,12 +261,7 @@ We have managed to connect to Google Calendar, and embedded the calendar that is
 
 An example of Monthly View:
 
-
-
-<p id="gdcalert9" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image9.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert10">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-![alt_text](images/image9.png "image_tooltip")
+![alt_text](images/Calendar.png "image_tooltip")
 
 
 [MS3 Progress]
@@ -310,11 +298,7 @@ To give users a sense of accomplishment, once all the outstanding events have be
 An example of the Checklist Page:
 
 
-
-<p id="gdcalert10" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image10.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert11">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-![alt_text](images/image10.png "image_tooltip")
+![alt_text](images/Checklist.png "image_tooltip")
 
 
 
@@ -332,12 +316,6 @@ An example of the Checklist Page:
    <td>Branching
    </td>
    <td>Utilized branches for new features and merging code branches within a version control system. Instead of directly merging to the main branch, which could cause merge conflicts.
-
-<p id="gdcalert11" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image11.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert12">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-<img src="images/image11.png" width="" alt="alt_text" title="image_tooltip">
-
    </td>
   </tr>
   <tr>
@@ -345,13 +323,6 @@ An example of the Checklist Page:
    </td>
    <td>Utilized GitHub Issues to track bugs, features throughout the development lifecycle. It also helped in the allocation of the features to work on for the both of us.
 <p>
-
-
-<p id="gdcalert12" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image12.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert13">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-<img src="images/image12.png" width="" alt="alt_text" title="image_tooltip">
-
    </td>
   </tr>
   <tr>
@@ -378,6 +349,30 @@ An example of the Checklist Page:
 
 # Testing
 
+For our user testing, we sent out our web application for other users to try. Afterwards, the users completed a Google Forms regarding the responsiveness and usability of our web application.
+
+The following questions were asked:
+
+
+
+* Are you able to register an account?
+* Are you able to authenticate with Google?
+* Are you redirected to the main page upon connecting with Google?
+* Does refreshing the main page bring back to the tab that you were in?
+* How responsive and accurate is the chatbot in adding events?
+* How responsive and accurate is the chatbot in deleting events?
+* How responsive and accurate is the chatbot in updating events?
+* Does the user calendar tab successfully retrieve your calendar and events?
+* Does the events checklist successfully list your upcoming events?
+* Does checking the box and clicking on save remove the event from the checklist?
+* It is easy to understand how the app works. (Linear scale question)
+* It is easy to navigate between the different pages. (Linear scale question)
+* Any other feedback?
+
+We have collated the response inside the following spreadsheet:
+
+[https://docs.google.com/spreadsheets/d/1eZCYJoM_ZpHge97S6YN7s3Xb8pg4JSePmJ8rFY7tzwA/edit?usp=sharing](https://docs.google.com/spreadsheets/d/1eZCYJoM_ZpHge97S6YN7s3Xb8pg4JSePmJ8rFY7tzwA/edit?usp=sharing)
+
 
 
 
@@ -401,12 +396,7 @@ We are using a free version of PostgreSQL which only gives us access for 1 month
 
 We have published our application on the Google API console. However, in order to verify our app, we would have to come up with privacy policies and terms & conditions. As such, please click on the advanced button, and click on the ‘Go to …’.
 
-
-
-<p id="gdcalert13" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image13.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert14">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
-![alt_text](images/image13.png "image_tooltip")
+![alt_text](images/Warning.png "image_tooltip")
 
 
    
@@ -416,7 +406,11 @@ We have published our application on the Google API console. However, in order t
 
 Video:
 
+[https://drive.google.com/file/d/1nPgDKaYJhMtTBhYryHQU5YT_8afbKipd/view?usp=sharing](https://drive.google.com/file/d/1nPgDKaYJhMtTBhYryHQU5YT_8afbKipd/view?usp=sharing)
+
 Poster:
+
+[https://drive.google.com/file/d/14e3_bSNFAKc80kdHfvDbXkPvsVoNHry1/view?usp=sharing](https://drive.google.com/file/d/14e3_bSNFAKc80kdHfvDbXkPvsVoNHry1/view?usp=sharing)
 
 GitHub:
 
