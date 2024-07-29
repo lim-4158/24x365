@@ -67,7 +67,7 @@ As a person that lives a hectic lifestyle, I would like to add things to my sche
    </td>
    <td>
      
-<img src="images/react.png" width="" alt="alt_text" title="image_tooltip">
+<img src="images/react.png" height="100" alt="alt_text" title="image_tooltip">
 
    </td>
   </tr>
@@ -76,7 +76,7 @@ As a person that lives a hectic lifestyle, I would like to add things to my sche
    </td>
    <td>
 
-<img src="images/django.png" width="" alt="alt_text" title="image_tooltip">
+<img src="images/django.png" height="100" alt="alt_text" title="image_tooltip">
 
    </td>
   </tr>
@@ -85,7 +85,7 @@ As a person that lives a hectic lifestyle, I would like to add things to my sche
    </td>
    <td>
 
-<img src="images/postgres.png" width="" alt="alt_text" title="image_tooltip">
+<img src="images/postgres.png" height="100" alt="alt_text" title="image_tooltip">
 
    </td>
   </tr>
@@ -94,7 +94,7 @@ As a person that lives a hectic lifestyle, I would like to add things to my sche
    </td>
    <td>
 
-<img src="images/github.png" width="" alt="alt_text" title="image_tooltip">
+<img src="images/github.png" height="100" alt="alt_text" title="image_tooltip">
 
    </td>
   </tr>
@@ -103,7 +103,7 @@ As a person that lives a hectic lifestyle, I would like to add things to my sche
    </td>
    <td>
 
-<img src="images/render.png" width="" alt="alt_text" title="image_tooltip">
+<img src="images/render.png" height="100" alt="alt_text" title="image_tooltip">
 
    </td>
   </tr>
