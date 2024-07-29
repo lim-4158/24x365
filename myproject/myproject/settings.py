@@ -32,14 +32,14 @@ BACKEND_URL = os.getenv('BACKEND_URL')
 
 # settings.py
 
-GOOGLE_CLIENT_ID = '932125669114-gmrcq6oi32c0tatus1dectjp4iouaopi.apps.googleusercontent.com'
+GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
 GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CREDENTIALS_PATH')
 GOOGLE_REDIRECT_URI = f"{BACKEND_URL}googlecalendar/oauth2callback"
 GOOGLE_API_SCOPES = ['https://www.googleapis.com/auth/calendar']
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['two4x365.onrender.com', 'localhost', 'two4x365-1.onrender.com', '127.0.0.1']
 
