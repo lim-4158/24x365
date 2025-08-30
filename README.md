@@ -1,12 +1,4 @@
-# Team Name
-
-24X365
-
-
-# Proposed Level of Achievement
-
-Gemini
-
+# 24X365
 
 # Aim
 
